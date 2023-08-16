@@ -104,11 +104,4 @@ socket.on('products', products => {
     }
     tablaSalida += `</tbody></table>`;
     document.getElementById('tablaElementos').innerHTML = tablaSalida;
-    btnQuitar = document.querySelectorAll('#btnQuitar');
-    for (let i = 0; i < btnQuitar.length; i++) {
-        const btn = btnQuitar[i];
-        btn.addEventListener('click', (val) => {
-            alert('Quitar! ' + i + " | " + val);
-        });
-    }
 });

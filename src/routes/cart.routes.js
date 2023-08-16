@@ -1,6 +1,15 @@
 import { Router } from 'express';
-import { CartManager } from '../cartManager.js';
-import { ProductManager } from '../productManager.js';
+
+//SERVICES DE FILE SYSTEM
+/*
+import { CartManager } from '../services/fs/cartManager.js';
+import { ProductManager } from '../services/fs/productManager.js';
+*/
+
+//SERVICES DE MONGODB
+import { CartManager } from '../dao/mongoDb/cartManager.db.js';
+import { ProductManager } from '../dao/mongoDb/productManager.db.js';
+
 const router = Router();
 
 const manejoProductos = new ProductManager('./src/data/products.json');
