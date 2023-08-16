@@ -88,7 +88,7 @@ socket.on('products', products => {
             </tr>
         </thead>
         <tbody>`
-    if (!products) {
+    if (products.length === 0) {
         tablaSalida += "<tr><td colspan='6'><i>(No hay productos)</i></td></tr>";
     } else {
         products.forEach(producto => {
