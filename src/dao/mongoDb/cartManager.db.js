@@ -1,40 +1,16 @@
 import { cartModel } from "../models/cart.model.js";
 export class CartManager {
-    constructor(fileName = "") {
+    constructor() {
         //Estado inicial, Array carts vacío y definición de la base de datos a utilizar (se deja filename por retrocompatibilidad con fs)
         this.carts = [];
     }
-   
-
-    //Función que devuelve los carritos en la BBDD
-    cargarCarrito = async () => {
-        let carritos = [];
-        try {
-            carritos = await cartModel.find().lean();
-        } catch (error) {
-            console.log("ERROR: " +  error);
-        }
-        return carritos;
-    }
 
     createCart = async () => {
-        this.carts = await this.cargarCarrito();
-        const products = [];
-        const cart = {
-            products
-        }
-        if (this.carts.length === 0) {
-            cart.id = 1;
-        } else {
-            const nuevoId = Math.max(...this.carts.map(x => x.id));
-            cart.id = nuevoId + 1;
-        }
-        this.carts.push(cart);
         try {
-            await cartModel.create({id: cart.id, products: cart.products});
-            return '{"status": "ok", "message": "Cart created successfully. ID: ' + cart.id + '"}' ;
+            const insert = await cartModel.create({ products: [] });
+            return '{"status": "ok", "message": "Cart created successfully. ID: ' + insert._id + '"}';
         } catch (error) {
-            return '{"status": "failed", "message": "Error when creating cart: ' + error + '"}' ;
+            return '{"status": "failed", "message": "Error when creating cart: ' + error + '"}';
         }
     }
 
@@ -42,43 +18,136 @@ export class CartManager {
         if (!idProducto || !cantidad || isNaN(cantidad) || !idCarrito) {
             return '{"status":"failed", "message":"Validation error. Please review your inputs and try again"}';
         } else {
-            this.carts = await this.cargarCarrito();
-            const nuevoProducto = {
-                product: parseInt(idProducto),
-                quantity: parseInt(cantidad)
+            let carritoEncontrado = false;
+            try {
+                carritoEncontrado = await cartModel.findOne({ _id: idCarrito });
             }
-            if (this.carts) {
-            const carritoEncontrado = this.carts.find(x => x.id === parseInt(idCarrito));
+            catch (error) {
+                console.log("ERROR: " + error);
+            }
             if (carritoEncontrado) {
-                const productoYaExistente = carritoEncontrado.products.find(x => x.product === parseInt(idProducto));
-                const indexCarrito = this.carts.findIndex(obj => obj.id === parseInt(idCarrito));
+                const productoYaExistente = carritoEncontrado.products.find(x => x.product == idProducto);
                 if (productoYaExistente) {
-                    const indexProducto = this.carts[indexCarrito].products.findIndex(obj => obj.product === parseInt(idProducto));
-                    this.carts[indexCarrito].products[indexProducto].quantity += parseInt(cantidad);
+                    const indexProducto = carritoEncontrado.products.findIndex(obj => obj.product == idProducto);
+                    carritoEncontrado.products[indexProducto].quantity += parseInt(cantidad);
                 } else {
-                    this.carts[indexCarrito].products.push(nuevoProducto);
+                    carritoEncontrado.products.push({ product: idProducto, quantity: cantidad });
                 }
-                try {
-                    await cartModel.updateOne({id: idCarrito}, {products: this.carts[indexCarrito].products});
-                }
-                catch (error) {
-                    console.log("ERROR: " + error);
-                }
-                return '{"status": "ok"}';
-
+                await cartModel.updateOne(carritoEncontrado);
+                return '{"status": "ok", "message": "Product added successfully"}';
             } else {
                 return '{"status":"failed", "message":"Cart does not exists"}';
             }
-            }
+
         }
     }
 
     getCartById = async (cartId) => {
-        const carritoEncontrado = await cartModel.findOne({id: cartId});
+        let carritoEncontrado = false;
+        try {
+            carritoEncontrado = await cartModel.findOne({ _id: cartId }).populate('products.product').lean();
+        }
+        catch (error) {
+            console.log("ERROR: " + error);
+        }
+
         if (carritoEncontrado) {
-            return { id: carritoEncontrado.id, products: carritoEncontrado.products}
+            return { id: carritoEncontrado._id, products: carritoEncontrado.products }
         } else {
             return '{"status":"failed", "message":"Cart does not exists"}';
+        }
+    }
+
+    updateProductQuantity = async (cartId, productId, quantity) => {
+        if (!cartId || !productId || !quantity || isNaN(quantity)) {
+            return '{"status":"failed", "message":"Validation error. Please review your inputs and try again"}';
+        } else {
+            let carritoEncontrado = [];
+            try {
+                carritoEncontrado = await cartModel.findOne({ _id: cartId });
+            }
+            catch (error) {
+                console.log("ERROR: " + error);
+            }
+
+            if (!carritoEncontrado) {
+                return '{"status": "failed", "message": "Cart does not exists"}';
+            } else {
+                //Busco el producto y actualizo la cantidad
+                const indexProducto = carritoEncontrado.products.findIndex(obj => obj.product == productId);
+                if (indexProducto === -1) {
+                    return '{"status": "failed", "message": "Product does not exists in cart"}';
+                } else {
+                    carritoEncontrado.products[indexProducto].quantity = quantity;
+                    await cartModel.updateOne(carritoEncontrado);
+                    return '{"status":"ok"}';
+                }
+            }
+        }
+    }
+
+    updateCart = async (cartId, products) => {
+        //valido el carrito y actualizo sus productos
+        let carritoEncontrado = [];
+        try {
+            carritoEncontrado = await cartModel.findOne({ _id: cartId });
+        }
+        catch (error) {
+            console.log("ERROR: " + error);
+        }
+        if (!carritoEncontrado) {
+            return '{"status": "failed", "message": "Cart does not exists"}';
+        }
+        else {
+            //actualizo el carrito con los productos enviados
+            carritoEncontrado.products = products;
+            await cartModel.updateOne(carritoEncontrado);
+            return '{"status":"ok"}';
+        }
+    }
+
+    deleteProductFromCart = async (cid, pid) => {
+        let carritoEncontrado = [];
+        try {
+            carritoEncontrado = await cartModel.findOne({ _id: cid });
+        }
+        catch (error) {
+            console.log("ERROR: " + error);
+        }
+        if (carritoEncontrado.length === 0) {
+            return '{"status": "failed", "message": "Cart does not exists"}';
+        } else {
+            //Busco el producto y lo quito del carrito
+            const indexProducto = carritoEncontrado.products.findIndex(obj => obj.product == pid);
+            if (indexProducto === -1) {
+                return '{"status": "failed", "message": "Product does not exists in cart"}';
+            } else {
+                carritoEncontrado.products.splice(indexProducto, 1);
+                await cartModel.updateOne(carritoEncontrado);
+                return '{"status":"ok"}';
+            }
+
+        }
+    }
+
+    emptyCart = async (id) => {
+        let carritoEncontrado = [];
+        try {
+            carritoEncontrado = await cartModel.find({ _id: id });
+        }
+        catch (error) {
+            console.log("ERROR: " + error);
+        }
+        if (carritoEncontrado.length === 0) {
+            return '{"status": "failed", "message": "Cart does not exists"}';
+        } else {
+            //Busco el carrito y lo vacío
+            try {
+                await cartModel.updateOne({ _id: id }, { products: [] });
+            } catch (error) {
+                console.log("ERROR: " + error);
+            }
+            return '{"status":"ok"}';
         }
     }
 }

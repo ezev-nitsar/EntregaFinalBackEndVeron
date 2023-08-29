@@ -1,0 +1,37 @@
+<h3>Visualizador de Carritos</h3>
+<h5>Desde aquí podrás ver los Items ingresados en el Carrito</h5>
+<hr />
+<table class="table table-bordered table-striped w-75 m-auto">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Categoría</th>
+            <th>Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#if carrito}}
+        {{#each carrito}}
+        <tr>
+            <td>{{this.product._id}}</td>
+            <td>{{this.product.code}}</td>
+            <td>{{this.product.title}}</td>
+            <td>{{this.product.description}}</td>
+            <td>{{this.product.price}}</td>
+            <td>{{this.product.stock}}</td>
+            <td>{{this.product.category}}</td>
+            <td>{{this.quantity}}</td>
+        </tr>
+        {{/each}}
+        {{else}}
+        <tr>
+            <td colspan="8"><i>(No hay productos)</i></td>
+        </tr>
+        {{/if}}
+    </tbody>
+</table>

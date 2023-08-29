@@ -7,6 +7,7 @@ btnCrearProducto.addEventListener('click', async () => {
     const descripcion = document.getElementById('descripcion').value;
     const precio = document.getElementById('precio').value;
     const stock = document.getElementById('stock').value;
+    const categoria = document.getElementById('categoria').value;
 
     const headers = new Headers({
        "Content-Type": "application/x-www-form-urlencoded"
@@ -17,7 +18,8 @@ btnCrearProducto.addEventListener('click', async () => {
         "title": titulo,
         "description": descripcion,
         "price": precio,
-        "stock": stock
+        "stock": stock,
+        "category": categoria
     });
     try {
         const rta = await fetch('api/products', {
@@ -33,6 +35,7 @@ btnCrearProducto.addEventListener('click', async () => {
             document.getElementById('descripcion').value = '';
             document.getElementById('precio').value = '';
             document.getElementById('stock').value = '';
+            document.getElementById('categoria').value = '';
             document.getElementById('codigo').focus();
             document.getElementById('msjEstado').innerHTML = 'Producto creado exitosamente!';
         } else {
@@ -46,8 +49,8 @@ btnCrearProducto.addEventListener('click', async () => {
 btnQuitarProducto.addEventListener('click', async () => {
     const idProductoRemover = document.getElementById('idProductoRemover').value;
     console.log(idProductoRemover);
-    if (!idProductoRemover || isNaN(idProductoRemover)) {
-        document.getElementById('msjEstado').innerHTML = 'ERROR: No has ingresado un ID a Borrar o no es numérico';
+    if (!idProductoRemover) {
+        document.getElementById('msjEstado').innerHTML = 'ERROR: No has ingresado un ID a Borrar';
     } else {
         document.getElementById('msjEstado').innerHTML = '';
         const headers = new Headers({
@@ -85,6 +88,7 @@ socket.on('products', products => {
                 <th>Descripción</th>
                 <th>Precio</th>
                 <th>Stock</th>
+                <th>Categoría</th>
             </tr>
         </thead>
         <tbody>`
@@ -93,12 +97,13 @@ socket.on('products', products => {
     } else {
         products.forEach(producto => {
             tablaSalida += `<tr>
-                                <td>${producto.id}</td>
+                                <td>${producto._id}</td>
                                 <td>${producto.code}</td>
                                 <td>${producto.title}</td>
                                 <td>${producto.description}</td>
                                 <td>${producto.price}</td>
                                 <td>${producto.stock}</td>
+                                <td>${producto.category}</td>
                             </tr>`;
         })
     }

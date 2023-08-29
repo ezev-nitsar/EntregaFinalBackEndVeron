@@ -6,4 +6,4 @@ router.get('/', async (req, res) => {
     res.render('realTimeProducts');
 });
 
-export default router
+export default router;

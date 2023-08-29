@@ -1,22 +1,19 @@
 import express from 'express';
-import productsRoutes from './routes/product.routes.js';
+import productsRoutes from './routes/products.routes.js';
 import cartRoutes from './routes/cart.routes.js';
 import homeRoutes from './routes/home.routes.js';
 import chatRoutes from './routes/chat.routes.js'
+import cartsRoutes from './routes/carts.routes.js';
+import productRoutes from './routes/product.routes.js';
 import realTimeProducts from './routes/realtimeproducts.routes.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
-
-//FILE SYSTEM
-//import { ProductManager } from './dao/fileSystem/productManager.js';
-
-//MONGO DB
 import { ProductManager } from './dao/mongoDb/productManager.db.js';
 import { MessageManager } from './dao/mongoDb/messageManager.db.js';
 
-const manejoProductos = new ProductManager('./src/data/products.json');
+const manejoProductos = new ProductManager();
 
 const app = express();
 const PORT = 8080;
@@ -31,12 +28,14 @@ app.use(express.static(__dirname + "/public"));
 
 
 app.use("/api/products", productsRoutes);
-app.use("/api/cart", cartRoutes);
+app.use("/api/carts", cartRoutes);
 app.use("/home", homeRoutes);
 app.use("/realtimeproducts", realTimeProducts);
 app.use("/messages", chatRoutes)
+app.use("/carts", cartsRoutes);
+app.use("/products", productRoutes);
 
-const connectionURL = "mongodb+srv://veronezequiel:oqpdVmpFMGPEoXbS@cluster0.0iuca9l.mongodb.net/ecommerce?retryWrites=true&w=majority";
+const connectionURL = "mongodb+srv://veronezequiel:oqpdVmpFMGPEoXbS@cluster0.0iuca9l.mongodb.net/ecommerce_e2?retryWrites=true&w=majority";
 const connectMongoDB = async () => {
     try {
         await mongoose.connect(connectionURL);
@@ -71,6 +70,3 @@ socketServer.on('connection', async socket => {
         socket.emit('messages', messages);
     });
 });
-
-
-
