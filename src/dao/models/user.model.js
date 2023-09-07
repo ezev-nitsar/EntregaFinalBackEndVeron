@@ -18,7 +18,8 @@ const schema = new mongoose.Schema({
     last_name: stringRequired,
     email: stringUnique,
     age: Number,
-    password: stringRequired
+    password: String,
+    registerMethod: String
 });
 
 const userModel = mongoose.model(collection, schema);

@@ -7,25 +7,24 @@ import { createHash, isValidPassword } from '../utils.js';
 //Declaramos nuestra estrategia:
 const localStrategy = passportLocal.Strategy;
 const initializePassport = () => {
-    
+
     //githubStrategy
     passport.use('github', new GitHubStrategy(
         {
-            clientID: 'Iv1.1e78db8dda19e717',
-            clientSecret: 'b34a986e954a34643dffc94b5fbbbf3961c0daf9',
-            callbackUrl: 'http://localhost:9090/api/sessions/githubcallback'
+            clientID: 'Iv1.7dedd1b3bb18e534',
+            clientSecret: 'b099817e15bb81cad360abace53cdc05994cb9fc',
+            callbackUrl: 'http://localhost:8080/api/sessions/github-callback'
         },
         async (accessToken, refreshToken, profile, done) => {
 
             try {
                 const user = await userModel.findOne({ email: profile._json.email })
-                
                 if (!user) {
                     //como el usuario no existe, lo genero
                     let newUser = {
                         first_name: profile._json.name,
-                        last_name: '',
-                        age: 0,
+                        last_name: '{GitHub}',
+                        age: '15', //GitHub fue fundado en 2008 ;=)
                         email: profile._json.email,
                         password: '',
                         registerMethod: "GitHub"
@@ -49,7 +48,6 @@ const initializePassport = () => {
             try {
                 const exists = await userModel.findOne({ email });
                 if (exists) {
-                    console.log("El usuario ya existe.");
                     return done(null, false);
                 }
                 const user = {
@@ -61,7 +59,6 @@ const initializePassport = () => {
                     registerMethod: "App-Local"
                 };
                 const result = await userModel.create(user);
-                
                 return done(null, result);
             } catch (error) {
                 return done("ERROR: " + error);
@@ -71,20 +68,17 @@ const initializePassport = () => {
 
     //Login con localStrategy
     passport.use('login', new localStrategy(
-        { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
+        { passReqToCallback: true, usernameField: 'email' }, async (req, email, password, done) => {
             try {
-                const user = await userModel.findOne({ email: username });
-                console.log("Usuario encontrado para login:");
-                console.log(user);
-                if (!user) {
-                    console.warn("User doesn't exists with username: " + username);
-                    return done(null, false);
-                }
-                if (!isValidPassword(user, password)) {
-                    console.warn("Invalid credentials for user: " + username);
-                    return done(null, false);
-                }
-                return done(null, user);
+                    const user = await userModel.findOne({ email: email });
+                    if (!user) {
+                        return done(null, false);
+                    }
+                    if (!isValidPassword(user, password)) {
+                        return done(null, false);
+                    } else {
+                        return done(null, user);
+                    }
             } catch (error) {
                 return done(error);
             }

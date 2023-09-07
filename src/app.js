@@ -17,7 +17,8 @@ import { ProductManager } from './dao/mongoDb/productManager.db.js';
 import { MessageManager } from './dao/mongoDb/messageManager.db.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 
 const manejoProductos = new ProductManager();
 const connectionURL = "mongodb+srv://veronezequiel:oqpdVmpFMGPEoXbS@cluster0.0iuca9l.mongodb.net/ecommerce_e2?retryWrites=true&w=majority";
@@ -39,6 +40,10 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/products", productsRoutes);
 app.use("/api/carts", cartRoutes);

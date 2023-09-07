@@ -1,57 +1,56 @@
 import { Router } from "express";
-import userModel from "../dao/models/user.model.js";
-import { createHash, isValidPassword } from "../utils.js";
+import passport from "passport";
+
 const router = Router();
 
-router.post("/register", async (req, res) => {
-    const { first_name, last_name, email, age, password } = req.body;
-    if (first_name && last_name && email && password) {
-        const usuarioYaExiste = await userModel.findOne({ email: email });
-        if (usuarioYaExiste) {
-            return res.status(400).send({ status: 'error', message: 'User already registered' });
-        } else {
-            let usuario = null;
-            const nuevoUsuario = { first_name, last_name, email, age, password: createHash(password) };
-            try {
-                usuario = await userModel.create(nuevoUsuario);
-            }
-            catch (error) {
-                console.log("ERROR: " + error);
-            }
-            return res.status(201).send({ status: 'ok', message: 'User created successfully', generated_id: usuario.id });
-        }
-    } else {
-        return res.status(400).send({ status: 'error', message: 'Cannot continue: first_name, last_name, email and password fields are required.' });
-    }
+router.post("/register", passport.authenticate('register', { failureRedirect: '/api/sessions/fail-register' }), async (req, res) => {
+    res.status(201).send({ status: 'ok', message: 'User created successfully' });
 });
 
-router.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    let usuarioExiste = null;
-    let rol = 'Usuario';
-    if (email == 'adminCoder@coder.com' && password == 'adminCod3r123') {
-        usuarioExiste = { first_name: 'Admin', last_name: 'Coder', email: 'adminCoder@coder.com', age: 99 }
-        rol = "Admin";
-    } else {
-        usuarioExiste = await userModel.findOne({ email: email });
-    }
-    if (!usuarioExiste) {
-        return res.status(401).send({ status: 'error', message: 'Invalid credentials' });
-    } 
-    
-    if (!isValidPassword(usuarioExiste, password)) {
-        return res.status(401).send({ status: 'error', message: 'Invalid credentials' });
+router.post("/login", passport.authenticate('login', { failureRedirect: '/api/sessions/fail-login'}), async (req, res) => {
+    const user = req.user
+    if (!user) {
+        res.status(401).send({ status: 'error', message: 'Cannot login. Something really bad happened... =/' });
     } else {
         req.session.user = {
-            name: `${usuarioExiste.first_name} ${usuarioExiste.last_name}`,
-            email: usuarioExiste.email,
-            age: usuarioExiste.age,
-            rol: rol
+            name: `${user.first_name} ${user.last_name}`,
+            email: user.email,
+            age: user.age,
+            rol: "Usuario"
         }
-        return res.status(200).send({ status: 'ok', message: 'User logged in successfully', payload: req.session.user });
+        res.status(200).send({ status: 'ok', message: 'User logged in successfully', user });
     }
-
 });
 
+router.get ("/github", passport.authenticate('github', {scope: ['user:email']}), async (req, res) => {});
+
+router.get ("/github-callback", passport.authenticate('github', {failureRedirect: '/api/sessions/fail-gh'}), async (req, res) => {
+
+    const user = req.user
+    if (!user) {
+        res.status(401).send({ status: 'error', message: 'Cannot login. Something really bad happened... =/' });
+    } else {
+        req.session.user = {
+            name: `${user.first_name} ${user.last_name}`,
+            email: user.email,
+            age: user.age,
+            rol: "Usuario"
+        }
+        res.redirect('/products');
+    }
+});
+
+
+router.get("/fail-register", (req, res) => {
+    res.render('error', { error: 'No se pudo registrar el usuario en forma Local'});
+});
+
+router.get("/fail-login", (req, res) => {
+    res.render('error', { error: 'No se pudo iniciar sesión en forma Local'});
+});
+
+router.get("/fail-gh", (req, res) => {
+    res.render('error', { error: 'No se pudo iniciar sesión/registrarse con GitHub'});
+});
 
 export default router;
