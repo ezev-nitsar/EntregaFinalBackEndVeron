@@ -30,9 +30,11 @@ const initializePassport = () => {
                         registerMethod: "GitHub"
                     }
                     const result = await userModel.create(newUser)
+                    result.rol = "Usuario";
                     done(null, result)
                 }
                 else {
+                    user.rol = "Usuario";
                     return done(null, user)
                 }
             } catch (error) {
@@ -70,15 +72,22 @@ const initializePassport = () => {
     passport.use('login', new localStrategy(
         { passReqToCallback: true, usernameField: 'email' }, async (req, email, password, done) => {
             try {
-                    const user = await userModel.findOne({ email: email });
+                let user = false;
+                if (email == 'adminCoder@coder.com' && password == 'adminCod3r123') {
+                    user = { _id: '64ed06ae2254d09457e26b9a', first_name: 'Admin', last_name: 'Coder', email: 'adminCoder@coder.com', age: 99, rol: "Admin" }
+                } else {
+                    user = await userModel.findOne({ email: email });
+
                     if (!user) {
                         return done(null, false);
                     }
                     if (!isValidPassword(user, password)) {
                         return done(null, false);
-                    } else {
-                        return done(null, user);
                     }
+                    user.rol = "Usuario";
+                }
+                return done(null, user);
+
             } catch (error) {
                 return done(error);
             }
