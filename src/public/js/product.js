@@ -1,5 +1,3 @@
-//const cartId = '64ed06ae2254d09457e26b9a'; //Fijado según recomendación de Tutor Rodrigo
-
 const addProductoToCart = async (productId, cartId) => {
     const headers = new Headers({
         "Content-Type": "application/x-www-form-urlencoded"
