@@ -1,9 +1,9 @@
-const cartId = '64ed06ae2254d09457e26b9a'; //Fijado según recomendación de Tutor Rodrigo
-const addProductoToCart = async (productId) => {
+//const cartId = '64ed06ae2254d09457e26b9a'; //Fijado según recomendación de Tutor Rodrigo
+
+const addProductoToCart = async (productId, cartId) => {
     const headers = new Headers({
         "Content-Type": "application/x-www-form-urlencoded"
      });
- 
      try {
          const rta = await fetch('/api/carts/' + cartId + '/product/' + productId, {
              method: 'POST',

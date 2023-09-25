@@ -36,6 +36,7 @@ router.post("/", async (req, res) => {
 });
 
 router.post('/:cid/product/:pid', async (req, res) => {
+    
     res.set('Content-Type', 'application/json');
     const cartId = req.params.cid;
     const productId = req.params.pid;

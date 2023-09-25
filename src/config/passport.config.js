@@ -3,7 +3,7 @@ import passportLocal from 'passport-local';
 import GitHubStrategy from 'passport-github2';
 import userModel from '../dao/models/user.model.js';
 import { createHash, isValidPassword } from '../utils.js';
-
+import { CartManager } from '../dao/mongoDb/cartManager.db.js';
 //Declaramos nuestra estrategia:
 const localStrategy = passportLocal.Strategy;
 const initializePassport = () => {
@@ -21,13 +21,18 @@ const initializePassport = () => {
                 const user = await userModel.findOne({ email: profile._json.email })
                 if (!user) {
                     //como el usuario no existe, lo genero
+                    const manejoCarrito = new CartManager();
+                    const cartId = await manejoCarrito.createCart();
+                    const cartParsed = JSON.parse(cartId);
                     let newUser = {
                         first_name: profile._json.name,
                         last_name: '{GitHub}',
                         age: '15', //GitHub fue fundado en 2008 ;=)
                         email: profile._json.email,
                         password: '',
-                        registerMethod: "GitHub"
+                        registerMethod: "GitHub",
+                        role: "user",
+                        cartId: cartParsed.createdCartId
                     }
                     const result = await userModel.create(newUser)
                     result.rol = "Usuario";
@@ -52,13 +57,18 @@ const initializePassport = () => {
                 if (exists) {
                     return done(null, false);
                 }
+                const manejoCarrito = new CartManager();
+                const cartId = await manejoCarrito.createCart();
+                const cartParsed = JSON.parse(cartId);
                 const user = {
                     first_name,
                     last_name,
                     email,
                     age,
                     password: createHash(password),
-                    registerMethod: "App-Local"
+                    registerMethod: "App-Local",
+                    role: "user",
+                    cartId: cartParsed.createdCartId
                 };
                 const result = await userModel.create(user);
                 return done(null, result);

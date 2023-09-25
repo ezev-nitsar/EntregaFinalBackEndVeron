@@ -16,7 +16,8 @@ router.post("/login", passport.authenticate('login', { failureRedirect: '/api/se
             name: `${user.first_name} ${user.last_name}`,
             email: user.email,
             age: user.age,
-            rol: user.rol
+            rol: user.rol,
+            cartId: user.cartId
         }
         res.status(200).send({ status: 'ok', message: 'User logged in successfully', user });
     }
@@ -34,7 +35,8 @@ router.get ("/github-callback", passport.authenticate('github', {failureRedirect
             name: `${user.first_name} ${user.last_name}`,
             email: user.email,
             age: user.age,
-            rol: user.rol
+            rol: user.rol,
+            cartId: user.cartId
         }
         res.redirect('/products');
     }

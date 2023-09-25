@@ -8,7 +8,7 @@ export class CartManager {
     createCart = async () => {
         try {
             const insert = await cartModel.create({ products: [] });
-            return '{"status": "ok", "message": "Cart created successfully. ID: ' + insert._id + '"}';
+            return '{"status": "ok", "message": "Cart created successfully", "createdCartId": "' + insert._id + '"}';
         } catch (error) {
             return '{"status": "failed", "message": "Error when creating cart: ' + error + '"}';
         }
@@ -33,12 +33,11 @@ export class CartManager {
                 } else {
                     carritoEncontrado.products.push({ product: idProducto, quantity: cantidad });
                 }
-                await cartModel.updateOne(carritoEncontrado);
+                await cartModel.updateOne({_id: idCarrito}, carritoEncontrado);
                 return '{"status": "ok", "message": "Product added successfully"}';
             } else {
                 return '{"status":"failed", "message":"Cart does not exists"}';
             }
-
         }
     }
 

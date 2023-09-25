@@ -19,7 +19,9 @@ const schema = new mongoose.Schema({
     email: stringUnique,
     age: Number,
     password: String,
-    registerMethod: String
+    registerMethod: String,
+    cartId: String,
+    role: { type: String, default: "user" }
 });
 
 const userModel = mongoose.model(collection, schema);
