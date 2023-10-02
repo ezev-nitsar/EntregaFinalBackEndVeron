@@ -1,21 +1,13 @@
 import { Router } from 'express';
-import { MessageManager } from '../dao/mongoDb/messageManager.db.js';
+
+import { getRenderChatController, postNewChatController } from '../controllers/chat.controller.js';
+
 const router = Router();
 
-router.get('/', async (req, res) => {
-    res.render('chat');
-});
+//GET
+router.get('/', getRenderChatController);
 
-router.post('/newChat', async (req, res) => {
-    const userName = req.body.userName;
-    const message = req.body.message;
-    if (userName && message) {
-        const Mensajes = new MessageManager();
-        const result = await Mensajes.writeMessage(userName, message);
-        res.send(result);
-    } else {
-        res.send('{"status":"failed", "message":"Incomplete params"}');
-    }
-});
+//POST
+router.post('/newChat', postNewChatController);
 
 export default router

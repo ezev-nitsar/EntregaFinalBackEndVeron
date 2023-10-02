@@ -19,13 +19,12 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
+import config from './config/enviroment.config.js';
+
 
 const manejoProductos = new ProductManager();
-const connectionURL = "mongodb+srv://veronezequiel:oqpdVmpFMGPEoXbS@cluster0.0iuca9l.mongodb.net/ecommerce_e2?retryWrites=true&w=majority";
 
 const app = express();
-const PORT = 8080;
-
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
 
@@ -35,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 
 app.use(session({
-    store: MongoStore.create({ mongoUrl: connectionURL, mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true }, ttl: 10 * 60 }),
+    store: MongoStore.create({ mongoUrl: config.mongoUrl, mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true }, ttl: 10 * 60 }),
     secret: 'pss4secretEAV',
     resave: false,
     saveUninitialized: true
@@ -58,7 +57,7 @@ app.use("/logout", logoutRoutes);
 
 const connectMongoDB = async () => {
     try {
-        await mongoose.connect(connectionURL);
+        await mongoose.connect(config.mongoUrl);
         console.log("MongoDB conectado correctamente");
     }
     catch (error) {
@@ -68,8 +67,8 @@ const connectMongoDB = async () => {
 
 connectMongoDB();
 
-const httpServer = app.listen(PORT, () => {
-    console.log(`Server levantado en el puerto ${PORT}`)
+const httpServer = app.listen(config.port, () => {
+    console.log(`Server levantado en el puerto ${config.port}`)
 });
 
 const socketServer = new Server(httpServer);

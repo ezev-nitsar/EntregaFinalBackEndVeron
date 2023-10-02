@@ -1,17 +1,10 @@
 import { Router } from "express";
-
+import { getLoginController, getRegisterController, getProfileController } from "../controllers/users.views.controller.js";
 const router = Router ();
 
-router.get("/login", (req, res) => {
-    res.render('login');
-});
-
-router.get("/register", (req, res) => {
-    res.render('register');
-});
-
-router.get("/", (req, res) => {
-    res.render('profile', { user: req.session.user });
-});
+//GET
+router.get("/login", getLoginController);
+router.get("/register", getRegisterController);
+router.get("/", getProfileController);
 
 export default router;

@@ -1,12 +1,8 @@
 import { Router } from 'express';
-import { ProductManager } from '../dao/mongoDb/productManager.db.js';   
-
-const manejoProductos = new ProductManager();
+import { getHomeRenderController } from '../controllers/home.controller.js';
 const router = Router();
 
-router.get('/', async (req, res) => {
-    const productos = await manejoProductos.getProducts();
-    res.render('home', {productos: productos});
-});
+//GET
+router.get('/', getHomeRenderController);
 
 export default router
