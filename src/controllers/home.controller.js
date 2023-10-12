@@ -1,8 +1,7 @@
-import { ProductManager } from '../dao/mongoDb/productManager.db.js';   
-const manejoProductos = new ProductManager();
+import { productManager } from "../services/factory.js";
 
 const getHomeRenderController   = async (req, res) => {
-        const productos = await manejoProductos.getProducts();
+        const productos = await productManager.getProducts();
         res.render('home', {productos: productos});
 }
 

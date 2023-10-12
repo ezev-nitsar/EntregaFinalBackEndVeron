@@ -1,19 +1,14 @@
-//SERVICES DE MONGODB
-import { CartManager } from '../dao/mongoDb/cartManager.db.js';
-import { ProductManager } from '../dao/mongoDb/productManager.db.js';
-
-const manejoProductos = new ProductManager();
-const manejoCarrito = new CartManager();
+import { cartManager, productManager }  from '../services/factory.js';
 
 const getCartByIdController = async (req, res) => {
     res.set('Content-Type', 'application/json');
-    const carritos = await manejoCarrito.getCartById(req.params.cid);
+    const carritos = await cartManager.getCartById(req.params.cid);
     res.send(carritos)
 }
 
 const postCreateCartController = async (req, res) => {
     res.set('Content-Type', 'application/json');
-    const result = await manejoCarrito.createCart();
+    const result = await cartManager.createCart();
     const rta = JSON.parse(result);
     if (rta.status === "ok") {
         res.status(201);
@@ -28,12 +23,12 @@ const postAddProductToCartController = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     if (cartId && productId) {
-        const productoExiste = await manejoProductos.getProductById(productId);
+        const productoExiste = await productManager.getProductById(productId);
         if (productoExiste === false) {
             res.status(404);
             res.send('{"status":"failed", "message":"Product not found"}');
         } else {
-            const result = await manejoCarrito.addProduct(cartId, productId, 1);
+            const result = await cartManager.addProduct(cartId, productId, 1);
             res.send(result);
         }
     } else {
@@ -45,7 +40,7 @@ const postAddProductToCartController = async (req, res) => {
 const putUpdateProductOnCartController = async (req, res) => {
     res.set('Content-Type', 'application/json');
     const cartId = req.params.cid;
-    const carrito = await manejoCarrito.getCartById(cartId);
+    const carrito = await cartManager.getCartById(cartId);
     if (!carrito.id) {
         res.status(404);
         res.send('{"status":"failed", "message":"Cart not found"}');
@@ -59,7 +54,7 @@ const putUpdateProductOnCartController = async (req, res) => {
             //Recorro todo el array de productos y verifico que exista el producto y que la cantidad sea válida
             let productosValidos = true;
             for (let i = 0; i < products.length; i++) {
-                const producto = await manejoProductos.getProductById(products[i].product);
+                const producto = await productManager.getProductById(products[i].product);
                 if (producto === false) {
                     productosValidos = false;
                 }
@@ -69,7 +64,7 @@ const putUpdateProductOnCartController = async (req, res) => {
             }
             if (productosValidos) {
                 //actualizo en el carrito el array de productos por el enviado
-                const result = await manejoCarrito.updateCart(cartId, products);
+                const result = await cartManager.updateCart(cartId, products);
                 res.send(result);
             } else {
                 res.status(401);
@@ -86,7 +81,7 @@ const putUpdateProductQuantityController = async (req, res) => {
     const productId = req.params.pid;
     const quantity = req.body.quantity;
     if (cartId && productId && quantity && !isNaN(quantity) && quantity > 0) {
-        const result = await manejoCarrito.updateProductQuantity(cartId, productId, quantity);
+        const result = await cartManager.updateProductQuantity(cartId, productId, quantity);
         res.send(result);
     } else {
         res.status(401);
@@ -99,7 +94,7 @@ const deleteProductFromCartController = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     if (cartId && productId) {
-        const result = await manejoCarrito.deleteProductFromCart(cartId, productId);
+        const result = await cartManager.deleteProductFromCart(cartId, productId);
         res.send(result);
     } else {
         res.status(401);
@@ -112,7 +107,7 @@ const deleteEmptyCartController = async (req, res) => {
     res.set('Content-Type', 'application/json');
     const cartId = req.params.cid;
     if (cartId) {
-        const result = await manejoCarrito.emptyCart(cartId);
+        const result = await cartManager.emptyCart(cartId);
         res.send(result);
     } else {
         res.status(401);

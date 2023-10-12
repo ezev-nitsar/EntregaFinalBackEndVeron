@@ -10,7 +10,6 @@ const numberRequiredIndex = {
 
 const cartsSchema = new mongoose.Schema({
     products: {
-        
         type: [
             {
                 product: {

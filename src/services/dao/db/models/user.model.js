@@ -16,6 +16,7 @@ const stringUnique = {
 const schema = new mongoose.Schema({
     first_name: stringRequired,
     last_name: stringRequired,
+    fullname: stringRequired,
     email: stringUnique,
     age: Number,
     password: String,

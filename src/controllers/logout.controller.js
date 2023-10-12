@@ -3,4 +3,4 @@ const getLogoutController = (req, res) => {
     res.redirect('/users/login');
 }
 
-export {getLogoutController}
+export { getLogoutController }

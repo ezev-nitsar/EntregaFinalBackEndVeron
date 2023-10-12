@@ -1,4 +1,4 @@
-import { cartModel } from "../models/cart.model.js";
+import { cartModel } from "../db/models/cart.model.js";
 export class CartManager {
     constructor() {
         //Estado inicial, Array carts vacío y definición de la base de datos a utilizar (se deja filename por retrocompatibilidad con fs)

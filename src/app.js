@@ -12,17 +12,15 @@ import logoutRoutes from './routes/logout.routes.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import { Server } from 'socket.io';
-import mongoose from 'mongoose';
-import { ProductManager } from './dao/mongoDb/productManager.db.js';
-import { MessageManager } from './dao/mongoDb/messageManager.db.js';
+import { productManager, messageManager } from './services/factory.js';
+
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import config from './config/enviroment.config.js';
 
-
-const manejoProductos = new ProductManager();
+console.log("Persistencia: " + config.persistence);
 
 const app = express();
 app.set('views', __dirname + '/views');
@@ -55,31 +53,18 @@ app.use("/products", productRoutes);
 app.use("/users", userRoutes);
 app.use("/logout", logoutRoutes);
 
-const connectMongoDB = async () => {
-    try {
-        await mongoose.connect(config.mongoUrl);
-        console.log("MongoDB conectado correctamente");
-    }
-    catch (error) {
-        console.log("Error al conectar a la BBDD: " + error);
-    }
-}
-
-connectMongoDB();
-
 const httpServer = app.listen(config.port, () => {
     console.log(`Server levantado en el puerto ${config.port}`)
 });
 
 const socketServer = new Server(httpServer);
 
-const messageManager = new MessageManager();
 
 socketServer.on('connection', async socket => {
-    const productos = await manejoProductos.getProducts();
+    const productos = await productManager.getProducts();
     socket.emit('products', productos);
     socket.on('updateRequest', async () => {
-        const productos = await manejoProductos.getProducts();
+        const productos = await productManager.getProducts();
         socket.emit('products', productos);
     });
     const messages = await messageManager.getMessages();

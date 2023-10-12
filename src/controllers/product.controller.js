@@ -1,6 +1,4 @@
-import { ProductManager } from '../dao/mongoDb/productManager.db.js';
-
-const manejoProductos = new ProductManager();
+import { productManager } from "../services/factory.js";
 
 const authMiddleWareController = (req, res, next) => {
     if (req.session.user) {
@@ -12,7 +10,7 @@ const authMiddleWareController = (req, res, next) => {
 
 const getProductController = async (req, res) => {
     const { page, query, sort  } = req.query;
-        const productos = await manejoProductos.getProductsPipeline( 12, page, query, sort );
+        const productos = await productManager.getProductsPipeline( 12, page, query, sort );
         res.render('product', {productos: productos, user: req.session.user });
 }
 
