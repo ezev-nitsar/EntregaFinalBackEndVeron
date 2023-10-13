@@ -6,6 +6,8 @@ const getCartByIdController = async (req, res) => {
     res.send(carritos)
 }
 
+
+
 const postCreateCartController = async (req, res) => {
     res.set('Content-Type', 'application/json');
     const result = await cartManager.createCart();
@@ -29,6 +31,7 @@ const postAddProductToCartController = async (req, res) => {
             res.send('{"status":"failed", "message":"Product not found"}');
         } else {
             const result = await cartManager.addProduct(cartId, productId, 1);
+            console.log("Agrego a cart: " + cartId + " producto: " + productId);
             res.send(result);
         }
     } else {
@@ -114,6 +117,5 @@ const deleteEmptyCartController = async (req, res) => {
         res.send('{"status":"failed", "message":"Cart id not specified"}');
     }
 }
-
 
 export { getCartByIdController, postCreateCartController, postAddProductToCartController, putUpdateProductOnCartController, putUpdateProductQuantityController, deleteProductFromCartController, deleteEmptyCartController }

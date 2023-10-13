@@ -85,7 +85,7 @@ const initializePassport = () => {
             try {
                 let user = false;
                 if (email == 'adminCoder@coder.com' && password == 'adminCod3r123') {
-                    user = { _id: '64ed06ae2254d09457e26b9a', first_name: 'Admin', last_name: 'Coder', email: 'adminCoder@coder.com', age: 99, rol: "Admin" }
+                    user = { _id: '64ed06ae2254d09457e26b9a', first_name: 'Admin', last_name: 'Coder', email: 'adminCoder@coder.com', age: 99, rol: "Admin", cartId: 'DummyCart' }
                 } else {
                    user = await userManager.getUserByEmail(email);
                     if (!user) {

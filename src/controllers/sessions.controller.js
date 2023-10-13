@@ -63,5 +63,22 @@ const getFailGHController = (req, res) => {
     res.render('error', { error: 'No se pudo iniciar sesión/registrarse con GitHub'});
 }
 
+const isUserMiddleware = (req, res, next) => {
+    if (!req.session.user || req.session.user.rol !== 'Usuario') {
+        console.log("Se debe tener perfil de Usuario para ejecutar esta tarea");
+        res.render('denied', { rol: 'no ser Usuario'})
+    } else {
+        next();
+    }
+}
 
-export { registerMiddleWareLocal, loginMiddleWareLocal, postRegisterController, postLoginController, githubAuthenticateMiddleWare, getDummyFunction, githubCallbackMiddleWare, getGitHubCallbackController, getFailRegisterController, getFailLoginController, getFailGHController }
+const isAdminMiddleware = (req, res, next) => {
+    if (!req.session.user || req.session.user.rol !== 'Admin') {
+        res.render('denied', { rol: 'no ser Administrador'})
+        console.log("Se debe tener perfil de Administrador para ejecutar esta tarea");
+    } else {
+        next();
+    } 
+}
+
+export { registerMiddleWareLocal, loginMiddleWareLocal, postRegisterController, postLoginController, githubAuthenticateMiddleWare, getDummyFunction, githubCallbackMiddleWare, getGitHubCallbackController, getFailRegisterController, getFailLoginController, getFailGHController, isUserMiddleware, isAdminMiddleware }

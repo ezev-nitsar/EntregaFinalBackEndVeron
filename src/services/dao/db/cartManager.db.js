@@ -33,7 +33,7 @@ export class CartManager {
                 } else {
                     carritoEncontrado.products.push({ product: idProducto, quantity: cantidad });
                 }
-                await cartModel.updateOne({_id: idCarrito}, carritoEncontrado);
+                await cartModel.updateOne({ _id: idCarrito }, carritoEncontrado);
                 return '{"status": "ok", "message": "Product added successfully"}';
             } else {
                 return '{"status":"failed", "message":"Cart does not exists"}';
@@ -100,7 +100,7 @@ export class CartManager {
         else {
             //actualizo el carrito con los productos enviados
             carritoEncontrado.products = products;
-            await cartModel.updateOne(carritoEncontrado);
+            await cartModel.updateOne({ _id: cartId }, carritoEncontrado);
             return '{"status":"ok"}';
         }
     }
@@ -122,7 +122,7 @@ export class CartManager {
                 return '{"status": "failed", "message": "Product does not exists in cart"}';
             } else {
                 carritoEncontrado.products.splice(indexProducto, 1);
-                await cartModel.updateOne(carritoEncontrado);
+                await cartModel.updateOne({ _id: cid }, carritoEncontrado);
                 return '{"status":"ok"}';
             }
 

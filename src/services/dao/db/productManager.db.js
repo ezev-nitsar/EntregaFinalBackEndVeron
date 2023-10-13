@@ -78,7 +78,7 @@ export class ProductManager {
     getProductById = async (id) => {
         let productoEncontrado = false;
         try {
-            productoEncontrado = await productModel.find({ _id: id });
+            productoEncontrado = await productModel.findOne({ _id: id });
         }
         catch (error) {
             console.log("ERROR: " + error);

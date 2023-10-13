@@ -5,6 +5,6 @@ const router = Router ();
 //GET
 router.get("/login", getLoginController);
 router.get("/register", getRegisterController);
-router.get("/", getProfileController);
+router.get("/profile", getProfileController);
 
 export default router;
