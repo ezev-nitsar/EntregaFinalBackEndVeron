@@ -17,7 +17,7 @@ const postLoginController = async (req, res) => {
                 name: `${user.first_name} ${user.last_name}`,
                 email: user.email,
                 age: user.age,
-                rol: user.rol,
+                role: user.role,
                 cartId: user.cartId
             }
             res.status(200).send({ status: 'ok', message: 'User logged in successfully', user });
@@ -43,7 +43,7 @@ const getGitHubCallbackController = async (req, res) => {
                 name: `${user.first_name} ${user.last_name}`,
                 email: user.email,
                 age: user.age,
-                rol: user.rol,
+                role: user.role,
                 cartId: user.cartId
             }
             res.redirect('/products');
@@ -64,7 +64,7 @@ const getFailGHController = (req, res) => {
 }
 
 const isUserMiddleware = (req, res, next) => {
-    if (!req.session.user || req.session.user.rol !== 'Usuario') {
+    if (!req.session.user || req.session.user.role !== 'Usuario') {
         console.log("Se debe tener perfil de Usuario para ejecutar esta tarea");
         res.render('denied', { rol: 'no ser Usuario'})
     } else {
@@ -73,9 +73,9 @@ const isUserMiddleware = (req, res, next) => {
 }
 
 const isAdminMiddleware = (req, res, next) => {
-    if (!req.session.user || req.session.user.rol !== 'Admin') {
+    if (!req.session.user || req.session.user.role !== 'Admin') {
         res.render('denied', { rol: 'no ser Administrador'})
-        console.log("Se debe tener perfil de Administrador para ejecutar esta tarea");
+        console.log("Se debe tener perfil de Administrador para ejecutar esta tarea.");
     } else {
         next();
     } 

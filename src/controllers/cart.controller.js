@@ -31,7 +31,6 @@ const postAddProductToCartController = async (req, res) => {
             res.send('{"status":"failed", "message":"Product not found"}');
         } else {
             const result = await cartManager.addProduct(cartId, productId, 1);
-            console.log("Agrego a cart: " + cartId + " producto: " + productId);
             res.send(result);
         }
     } else {

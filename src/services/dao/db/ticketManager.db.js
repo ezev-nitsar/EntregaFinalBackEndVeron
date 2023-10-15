@@ -13,10 +13,10 @@ export class TicketManager {
         if (this.cart && user.name && user.email) {
                 //valido si los productos comprados tienen stock
                 let products = this.cart.products;
+                let total = 0;
                 let productsWithNoStock = [];
                 let productsWithStock = [];
                 let productsPostPurchase = [];
-                let total = 0;
                 let productNo;
                 let productYes;
                 let productPostPurchase;
@@ -28,11 +28,11 @@ export class TicketManager {
                             notAvailableProduct: product._id,
                             quantity: products[i].quantity
                         }
+                        //Acá los guardo para compatibilizarlo con el carrito
                         productPostPurchase = {
                             product: product._id,
                             quantity: products[i].quantity
                         }
-                        //Acá los guardo para compatibilizarlo con el carrito
                         productsWithNoStock.push(productNo);
                         productsPostPurchase.push(productPostPurchase);
                     } else {

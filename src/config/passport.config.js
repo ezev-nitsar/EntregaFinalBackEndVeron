@@ -68,7 +68,7 @@ const initializePassport = () => {
                     age,
                     password: createHash(password),
                     registerMethod: "App-Local",
-                    role: "user",
+                    role: "Usuario",
                     cartId: cartParsed.createdCartId
                 };
                 const result = await userManager.createUser(new UserDTO(user));
@@ -85,7 +85,7 @@ const initializePassport = () => {
             try {
                 let user = false;
                 if (email == 'adminCoder@coder.com' && password == 'adminCod3r123') {
-                    user = { _id: '64ed06ae2254d09457e26b9a', first_name: 'Admin', last_name: 'Coder', email: 'adminCoder@coder.com', age: 99, rol: "Admin", cartId: 'DummyCart' }
+                    user = { _id: '64ed06ae2254d09457e26b9a', first_name: 'Admin', last_name: 'Coder', email: 'adminCoder@coder.com', age: 99, role: "Admin", cartId: 'DummyCart' }
                 } else {
                    user = await userManager.getUserByEmail(email);
                     if (!user) {
@@ -94,7 +94,9 @@ const initializePassport = () => {
                     if (!isValidPassword(user, password)) {
                         return done(null, false);
                     }
-                    user.rol = "Usuario";
+                    if (!user.role) {
+                        user.role = "Usuario";
+                    }
                 }
                 return done(null, user);
 

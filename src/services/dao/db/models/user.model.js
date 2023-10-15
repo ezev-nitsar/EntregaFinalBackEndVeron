@@ -22,7 +22,7 @@ const schema = new mongoose.Schema({
     password: String,
     registerMethod: String,
     cartId: String,
-    role: { type: String, default: "user" }
+    role: { type: String, default: "Usuario" }
 });
 
 const userModel = mongoose.model(collection, schema);

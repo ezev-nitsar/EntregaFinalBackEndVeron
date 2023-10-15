@@ -1,6 +1,5 @@
 import config from '../config/enviroment.config.js';
 import MongoSingleton from '../config/mongodb-singleton.js';
-import { TicketManager } from './dao/db/ticketManager.db.js';
 let productManager;
 let cartManager;
 let messageManager;
@@ -18,7 +17,7 @@ async function initializeMongoService ()  {
         cartManager = new CartManager();
         messageManager = new MessageManager();
         userManager = new UserManager();
-        ticketManager = new TicketManager();  
+        ticketManager = new TicketManager();
     }
     catch (error) {
         console.log(error);
