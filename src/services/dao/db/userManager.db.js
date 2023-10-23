@@ -1,8 +1,23 @@
 import userModel from './models/user.model.js';
 import { UserDTO } from '../dto/user.dto.js';
+import CustomError from "../../errors/CustomError.js";
+import EnumErrors from "../../errors/enum.js";
+import { createUserErrorInfo } from "../../errors/info.js";
+
 export class UserManager {
     createUser = async (user) => {
-        return await userModel.create(user);
+        if (!user.first_name || !user.last_name || !user.email || !user.age) {
+            CustomError.createError(
+                {
+                    name: "Error al Generar el Usuario Local",
+                    cause: createUserErrorInfo(user),
+                    message: "Error al intentar guardar el Usuario",
+                    code: EnumErrors.INVALID_TYPES_ERROR
+                }
+            )
+        } else {
+            return await userModel.create(user);
+        }
     }
 
     getUsers = async () => {

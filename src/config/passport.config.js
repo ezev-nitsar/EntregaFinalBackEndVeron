@@ -4,6 +4,7 @@ import GitHubStrategy from 'passport-github2';
 import { createHash, isValidPassword } from '../utils.js';
 import { cartManager, userManager } from '../services/factory.js';
 import { UserDTO } from '../services/dao/dto/user.dto.js';
+
 //Declaramos nuestra estrategia:
 const localStrategy = passportLocal.Strategy;
 const initializePassport = () => {
@@ -57,6 +58,7 @@ const initializePassport = () => {
             try {
                 const exists = await userManager.getUserByEmail(email);
                 if (exists) {
+                    
                     return done(null, false);
                 }
                 const cartId = await cartManager.createCart();
@@ -71,10 +73,11 @@ const initializePassport = () => {
                     role: "Usuario",
                     cartId: cartParsed.createdCartId
                 };
+                
                 const result = await userManager.createUser(new UserDTO(user));
                 return done(null, result);
             } catch (error) {
-                return done("ERROR: " + error);
+                console.log(error.message);
             }
         }
     ));

@@ -11,3 +11,13 @@ export const createProductErrorInfo = (product) => {
     * thumbnails : Tipo Array, se recibió: ${product.thumbnails}
     `
 }
+
+export const createUserErrorInfo = (user) => {
+    return `Una o más propiedades del usuario estaban incompletas o no eran válidas.
+    Propiedades requeridas:
+    * first_name : Tipo String, se recibió: ${user.first_name}
+    * last_name : Tipo String, se recibió: ${typeof user.last_name}
+    * email : Tipo String, se recibió: ${user.email}
+    * age: Tipo Number, se recibió: ${user.age}
+    `
+}
