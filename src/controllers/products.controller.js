@@ -23,16 +23,20 @@ const getProductByIdController = async (req, res) => {
 
 const postAddProductController = async (req, res) => {
         res.set('Content-Type', 'application/json');
+        try {
         const nuevoProducto = JSON.parse(await productManager.addProduct(req.body));
         if (nuevoProducto.status === "ok") {
             res.send(`{"status": "ok"}`);
         } else {
             res.send(`{"status": "failed", "message": "${nuevoProducto.message}" }`);
         }
+    } catch (error) {
+        console.error(error);
+        res.send(`{"status": "failed", "message": "${error.message}" }`);
+    }
 }
 
 const putUpdateProductController = async (req, res) => {
-    
         const productId = req.params.pid;
         res.set('Content-Type', 'application/json');
         const actualizarProducto = JSON.parse(await productManager.updateProduct(productId, req.body));

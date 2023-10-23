@@ -1,4 +1,7 @@
 import { productModel } from "../db/models/product.model.js";
+import CustomError from "../../errors/CustomError.js";
+import EnumErrors from "../../errors/enum.js";
+import { createProductErrorInfo } from "../../errors/info.js";
 export class ProductManager {
     constructor() {
         this.products = [];
@@ -97,6 +100,14 @@ export class ProductManager {
 
         //Verifico que todos los campos estén seteados y que price y stock sean numéricos
         if (!producto.title || !producto.description || !producto.price || isNaN(producto.price) || !producto.code || !producto.stock || isNaN(producto.stock) || !producto.category) {
+            CustomError.createError(
+                {
+                    name: "Error al Crear un Producto",
+                    cause: createProductErrorInfo(producto),
+                    message: "Error al intentar crear el producto",
+                    code: EnumErrors.INVALID_TYPES_ERROR
+                }
+            );
             return '{"status": "failed", "message": "Validation error. Please review your inputs and try again"}';
         }
         if (producto.status != undefined) {

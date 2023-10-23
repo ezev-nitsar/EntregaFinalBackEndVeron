@@ -11,6 +11,7 @@ import sessionRoutes from './routes/sessions.routes.js';
 import logoutRoutes from './routes/logout.routes.js';
 import ticketRoutes from './routes/ticket.routes.js';
 import currentRoutes from './routes/current.routes.js';
+import mockingProductsRoutes from './routes/mockingproducts.routes.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import { Server } from 'socket.io';
@@ -56,6 +57,7 @@ app.use("/users", userRoutes);
 app.use("/logout", logoutRoutes);
 app.use("/ticket", ticketRoutes);
 app.use("/current", currentRoutes);
+app.use("/mockingproducts", mockingProductsRoutes);
 const httpServer = app.listen(config.port, () => {
     console.log(`Server levantado en el puerto ${config.port}`)
 });
