@@ -2,6 +2,8 @@ import { productModel } from "../db/models/product.model.js";
 import CustomError from "../../errors/CustomError.js";
 import EnumErrors from "../../errors/enum.js";
 import { createProductErrorInfo } from "../../errors/info.js";
+import { useLogger } from "../../../config/logger.config.js";
+
 export class ProductManager {
     constructor() {
         this.products = [];
@@ -13,7 +15,8 @@ export class ProductManager {
         try {
             productos = await productModel.find().lean();
         } catch (error) {
-            console.log("ERROR: " + error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al leer los productos: ${error}`);
         }
         return productos;
     }
@@ -35,7 +38,8 @@ export class ProductManager {
             }
 
         } catch (error) {
-            console.log("ERROR: " + error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al leer los productos: ${error}`);
         }
         const filtros = [];
         if (query !== "") {
@@ -142,17 +146,20 @@ export class ProductManager {
                 this.products.push(product);
                 return '{"status":"ok"}';
             } catch {
+                const log = useLogger();
+                log.error(`${new Date().toLocaleString()}: Error al agregar el producto: ${error}`);
                 return '{"status":"failed", "message":"' + error + '"}';
             }
         }
     }
     updateProduct = async (id, productDetails) => {
         let productoEncontrado = [];
+        const log = useLogger();
         try {
             productoEncontrado = await productModel.find({ _id: id });
         }
         catch (error) {
-            console.log("ERROR: " + error);
+            log.error(`${new Date().toLocaleString()}: Error al leer el producto: ${error}`);
         }
         if (productoEncontrado.length === 0) {
             return '{"status": "failed", "message": "Product does not exists"}';
@@ -207,9 +214,8 @@ export class ProductManager {
 
             try {
                 await productModel.updateOne({ _id: id }, { title: product.title, description: product.description, price: product.price, thumbnails: product.thumbnails, code: product.code, stock: product.stock, status: product.status })
-
             } catch (error) {
-                console.log("ERROR: " + error);
+                log.error(`${new Date().toLocaleString()}: Error al actualizar el producto: ${error}`);
             }
             return '{"status":"ok"}';
         }
@@ -217,11 +223,12 @@ export class ProductManager {
 
     deleteProduct = async (id) => {
         let productoEncontrado = [];
+        const log = useLogger();
         try {
             productoEncontrado = await productModel.find({ _id: id });
         }
         catch (error) {
-            console.log("ERROR: " + error);
+            log.error(`${new Date().toLocaleString()}: Error al leer el producto: ${error}`);
         }
         if (productoEncontrado.length === 0) {
             return '{"status": "failed", "message": "Product does not exists"}';
@@ -232,7 +239,7 @@ export class ProductManager {
             try {
                 await productModel.deleteOne({ _id: id });
             } catch (error) {
-                console.log("ERROR: " + error);
+                log.error(`${new Date().toLocaleString()}: Error al eliminar el producto: ${error}`);
             }
             return '{"status":"ok"}';
         }

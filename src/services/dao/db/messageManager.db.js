@@ -1,4 +1,6 @@
 import { messagesModel } from '../db/models/messages.model.js';
+import { useLogger } from "../../../config/logger.config.js";
+
 export class MessageManager {
     constructor() {
         this.messages = [];
@@ -9,7 +11,8 @@ export class MessageManager {
             const messages = await messagesModel.find({});
             return messages;
         } catch (error) {
-            console.log(error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al obtener los mensajes: ${error}`);
         }
     }
 
@@ -18,7 +21,8 @@ export class MessageManager {
             await messagesModel.create({ user: userId, message: message });
             return '{"status": "ok", "message": "Message created successfully"}';
         } catch (error) {
-            console.log(error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al guardar el mensaje: ${error}`);
             return '{"status": "failed", "message": "Error when creating message"}';
         }
     }

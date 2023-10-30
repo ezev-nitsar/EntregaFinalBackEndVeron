@@ -12,23 +12,27 @@ import logoutRoutes from './routes/logout.routes.js';
 import ticketRoutes from './routes/ticket.routes.js';
 import currentRoutes from './routes/current.routes.js';
 import mockingProductsRoutes from './routes/mockingproducts.routes.js';
+import loggerTest from './routes/loggertest.routes.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import { Server } from 'socket.io';
 import { productManager, messageManager } from './services/factory.js';
-
+import { addLogger } from './config/logger.config.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import config from './config/enviroment.config.js';
+import { useLogger } from './config/logger.config.js';
 
-console.log("Persistencia: " + config.persistence);
-
+const log = useLogger();
 const app = express();
+
+log.info(`${new Date().toLocaleString()} APP Iniciada en modo: ${config.enviroment}`);
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
-
+app.use(addLogger);
 app.engine('handlebars', handlebars.engine());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,7 +48,6 @@ app.use(session({
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use("/api/products", productsRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/sessions", sessionRoutes);
@@ -58,8 +61,9 @@ app.use("/logout", logoutRoutes);
 app.use("/ticket", ticketRoutes);
 app.use("/current", currentRoutes);
 app.use("/mockingproducts", mockingProductsRoutes);
+app.use("/loggerTest", loggerTest);
 const httpServer = app.listen(config.port, () => {
-    console.log(`Server levantado en el puerto ${config.port}`)
+    log.info(`${new Date().toLocaleString()} escuchando en el puerto ${config.port}`)
 });
 
 const socketServer = new Server(httpServer);

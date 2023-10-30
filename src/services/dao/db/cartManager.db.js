@@ -1,4 +1,6 @@
 import { cartModel } from "../db/models/cart.model.js";
+import { useLogger } from "../../../config/logger.config.js";
+
 export class CartManager {
     constructor() {
         //Estado inicial, Array carts vacío y definición de la base de datos a utilizar (se deja filename por retrocompatibilidad con fs)
@@ -47,7 +49,8 @@ export class CartManager {
             carritoEncontrado = await cartModel.findOne({ _id: cartId }).populate('products.product').lean();
         }
         catch (error) {
-            console.log("ERROR: " + error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al obtener el carrito: ${error}`);
         }
 
         if (carritoEncontrado) {
@@ -66,7 +69,8 @@ export class CartManager {
                 carritoEncontrado = await cartModel.findOne({ _id: cartId });
             }
             catch (error) {
-                console.log("ERROR: " + error);
+                const log = useLogger();
+                log.error(`${new Date().toLocaleString()}: Error al obtener el carrito: ${error}`);
             }
 
             if (!carritoEncontrado) {
@@ -92,7 +96,8 @@ export class CartManager {
             carritoEncontrado = await cartModel.findOne({ _id: cartId });
         }
         catch (error) {
-            console.log("ERROR: " + error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al actualizar el carrito: ${error}`);
         }
         if (!carritoEncontrado) {
             return '{"status": "failed", "message": "Cart does not exists"}';
@@ -111,7 +116,8 @@ export class CartManager {
             carritoEncontrado = await cartModel.findOne({ _id: cid });
         }
         catch (error) {
-            console.log("ERROR: " + error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al eliminar el producto del carrito: ${error}`);
         }
         if (carritoEncontrado.length === 0) {
             return '{"status": "failed", "message": "Cart does not exists"}';
@@ -131,11 +137,12 @@ export class CartManager {
 
     emptyCart = async (id) => {
         let carritoEncontrado = [];
+        const log = useLogger();
         try {
             carritoEncontrado = await cartModel.find({ _id: id });
         }
         catch (error) {
-            console.log("ERROR: " + error);
+            log.error(`${new Date().toLocaleString()}: Error al obtener el carrito: ${error}`);
         }
         if (carritoEncontrado.length === 0) {
             return '{"status": "failed", "message": "Cart does not exists"}';
@@ -144,7 +151,7 @@ export class CartManager {
             try {
                 await cartModel.updateOne({ _id: id }, { products: [] });
             } catch (error) {
-                console.log("ERROR: " + error);
+                log.error(`${new Date().toLocaleString()}: Error al actualizar el carrito: ${error}`);
             }
             return '{"status":"ok"}';
         }

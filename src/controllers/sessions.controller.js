@@ -1,10 +1,10 @@
 import passport from "passport";
-
 const registerMiddleWareLocal = passport.authenticate('register', { failureRedirect: '/api/sessions/fail-register' });
 
 const loginMiddleWareLocal = passport.authenticate('login', { failureRedirect: '/api/sessions/fail-login'});
 
 const postRegisterController = async (req, res) => {
+        req.logger.debug(`${new Date().toLocaleString()}: ${req.body.email} registered successfully`);
         res.status(200).send({ status: 'ok', message: 'User created successfully' });
 }
 
@@ -20,6 +20,7 @@ const postLoginController = async (req, res) => {
                 role: user.role,
                 cartId: user.cartId
             }
+            req.logger.debug(`${new Date().toLocaleString()}: ${req.session.user.name} logged in successfully`);
             res.status(200).send({ status: 'ok', message: 'User logged in successfully', user });
         }
 }
@@ -46,6 +47,7 @@ const getGitHubCallbackController = async (req, res) => {
                 role: user.role,
                 cartId: user.cartId
             }
+            req.logger.debug(`${new Date().toLocaleString()}: ${req.session.user.name} logged in successfully through GitHub`);
             res.redirect('/products');
         }
     
@@ -65,7 +67,7 @@ const getFailGHController = (req, res) => {
 
 const isUserMiddleware = (req, res, next) => {
     if (!req.session.user || req.session.user.role !== 'Usuario') {
-        console.log("Se debe tener perfil de Usuario para ejecutar esta tarea");
+        req.logger.warning(`${new Date().toLocaleString()}: Se debe tener perfil de Usuario para ejecutar esta tarea`);
         res.render('denied', { rol: 'no ser Usuario'})
     } else {
         next();
@@ -75,7 +77,7 @@ const isUserMiddleware = (req, res, next) => {
 const isAdminMiddleware = (req, res, next) => {
     if (!req.session.user || req.session.user.role !== 'Admin') {
         res.render('denied', { rol: 'no ser Administrador'})
-        console.log("Se debe tener perfil de Administrador para ejecutar esta tarea.");
+        req.logger.warning(`${new Date().toLocaleString()}: Se debe tener perfil de Administrador para ejecutar esta tarea`);
     } else {
         next();
     } 

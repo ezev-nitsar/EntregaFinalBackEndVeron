@@ -1,6 +1,7 @@
 import { ticketModel } from './models/ticket.model.js';
 import { CartManager } from './cartManager.db.js';
 import { ProductManager } from './productManager.db.js';
+import { useLogger } from "../../../config/logger.config.js";
 
 export class TicketManager {
     
@@ -68,7 +69,8 @@ export class TicketManager {
             const ticket = await ticketModel.findOne( {_id: ticketId }).populate('products.product').populate('notAvailableProducts.notAvailableProduct').lean();
             return ticket;
         } catch (error) {
-            console.log("ERROR: " + error);
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al cargar el ticket: ${error}`);
         }
     }
 }
