@@ -11,12 +11,6 @@ const numberRequired = {
     required: true
 }
 
-const numberRequiredIndex = {
-    type: Number,
-    required: true,
-    index: true
-}
-
 const productsSchema = new mongoose.Schema({
     title: stringRequired,
     description: stringRequired,
@@ -26,7 +20,8 @@ const productsSchema = new mongoose.Schema({
     code: stringRequired,
     stock: { type: Number },
     status: { type: Boolean },
-    category: stringRequired
+    category: stringRequired,
+    owner: {type: String, default: "admin"}
 });
 productsSchema.plugin(mongoosePaginate);
 export const productModel = mongoose.model(productsCollection, productsSchema);

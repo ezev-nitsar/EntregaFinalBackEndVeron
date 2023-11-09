@@ -13,6 +13,8 @@ import ticketRoutes from './routes/ticket.routes.js';
 import currentRoutes from './routes/current.routes.js';
 import mockingProductsRoutes from './routes/mockingproducts.routes.js';
 import loggerTest from './routes/loggertest.routes.js';
+import mailRoutes from './routes/mail.routes.js';
+import recoveryRoutes from './routes/passwordrecovery.routes.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import { Server } from 'socket.io';
@@ -62,6 +64,8 @@ app.use("/ticket", ticketRoutes);
 app.use("/current", currentRoutes);
 app.use("/mockingproducts", mockingProductsRoutes);
 app.use("/loggerTest", loggerTest);
+app.use("/mail", mailRoutes);
+app.use("/recovery", recoveryRoutes);
 const httpServer = app.listen(config.port, () => {
     log.info(`${new Date().toLocaleString()} escuchando en el puerto ${config.port}`)
 });
