@@ -84,3 +84,15 @@
 [31merror[39m: 9/11/2023, 18:12:47: Error al actualizar la contraseña: Error: data and hash arguments required
 [31merror[39m: 9/11/2023, 18:12:48: Error al actualizar la contraseña: Error: data and hash arguments required
 [31merror[39m: 9/11/2023, 18:12:50: Error al actualizar la contraseña: Error: data and hash arguments required
+[31merror[39m: 13/11/2023, 11:04:33: Error al leer el producto: CastError: Cast to ObjectId failed for value "sdgsdg" (type string) at path "_id" for model "products"
+[31merror[39m: 13/11/2023, 11:25:14: Cast to ObjectId failed for value "1" (type string) at path "_id" for model "users"
+[31merror[39m: 13/11/2023, 11:29:35: Cannot read properties of null (reading 'role')
+[31merror[39m: 13/11/2023, 11:30:05: Cannot read properties of null (reading 'role')
+[31merror[39m: 13/11/2023, 11:30:26: Cannot set headers after they are sent to the client
+[31merror[39m: 13/11/2023, 11:30:49: Cannot set headers after they are sent to the client
+[31merror[39m: 13/11/2023, 11:30:53: Cannot set headers after they are sent to the client
+[31merror[39m: 13/11/2023, 11:31:13: Cannot set headers after they are sent to the client
+[31merror[39m: 13/11/2023, 11:31:15: Cannot set headers after they are sent to the client
+[31merror[39m: 13/11/2023, 11:31:20: Cannot set headers after they are sent to the client
+[31merror[39m: 13/11/2023, 11:31:41: Cannot set headers after they are sent to the client
+[31merror[39m: 13/11/2023, 11:32:46: Cannot set headers after they are sent to the client

@@ -1,4 +1,5 @@
 import passport from "passport";
+import { productManager } from "../services/factory.js";
 const registerMiddleWareLocal = passport.authenticate('register', { failureRedirect: '/api/sessions/fail-register' });
 
 const loginMiddleWareLocal = passport.authenticate('login', { failureRedirect: '/api/sessions/fail-login'});
@@ -14,6 +15,7 @@ const postLoginController = async (req, res) => {
             res.status(401).send({ status: 'error', message: 'Cannot login. Something really bad happened... =/' });
         } else {
             req.session.user = {
+                id: user._id,
                 name: `${user.first_name} ${user.last_name}`,
                 email: user.email,
                 age: user.age,
@@ -66,7 +68,7 @@ const getFailGHController = (req, res) => {
 }
 
 const isUserMiddleware = (req, res, next) => {
-    if (!req.session.user || req.session.user.role !== 'Usuario') {
+    if (!req.session.user || (req.session.user.role !== 'Usuario' && req.session.user.role !== 'Premium')) {
         req.logger.warning(`${new Date().toLocaleString()}: Se debe tener perfil de Usuario para ejecutar esta tarea`);
         res.render('denied', { rol: 'no ser Usuario'})
     } else {
@@ -83,4 +85,40 @@ const isAdminMiddleware = (req, res, next) => {
     } 
 }
 
-export { registerMiddleWareLocal, loginMiddleWareLocal, postRegisterController, postLoginController, githubAuthenticateMiddleWare, getDummyFunction, githubCallbackMiddleWare, getGitHubCallbackController, getFailRegisterController, getFailLoginController, getFailGHController, isUserMiddleware, isAdminMiddleware }
+const isPremiumMiddleware = (req, res, next) => {
+    if (!req.session.user || req.session.user.role !== 'Premium') {
+        res.render('denied', { rol: 'no ser Administrador'})
+        req.logger.warning(`${new Date().toLocaleString()}: Se debe tener perfil de Premium para ejecutar esta tarea`);
+    } else {
+        next();
+    } 
+}
+
+const isPremiumOrAdminMiddleware = (req, res, next) => {
+    if (!req.session.user || (req.session.user.role !== 'Premium' && req.session.user.role !== 'Admin')) {
+        console.log(req.session.user.role);
+        res.render('denied', { rol: 'no ser Premium'})
+        req.logger.warning(`${new Date().toLocaleString()}: Se debe tener perfil de Premium/Administrador para ejecutar esta tarea`);
+    } else {
+        next();
+    } 
+}
+
+const canAddProductToCart = async (req, res, next) => {
+    if (req.session.user.role === 'Usuario') {
+        next();
+    } else if (req.session.user.role === 'Premium') {
+        const productId = req.params.pid;
+        const product = await productManager.getProductById(productId);
+        if (product.owner === req.session.user.id) {
+            req.logger.warning(`${new Date().toLocaleString()}: No se puede agregar un producto propio al carrito`);
+            return "{status: 'failed', message: 'No se pudo agregar el producto al carrito. El producto es propio'}";
+        } else {
+            next();
+        }
+    } else if (req.session.user.role === 'Admin') {
+        req.logger.warning(`${new Date().toLocaleString()}: Se debe tener perfil de Usuario para ejecutar esta tarea. Usted es ${req.session.user.role}`);
+        return "{status: 'failed', message: 'No se pudo agregar el producto al carrito. Usted es Administrador'}";
+    }
+}
+export { registerMiddleWareLocal, loginMiddleWareLocal, postRegisterController, postLoginController, githubAuthenticateMiddleWare, getDummyFunction, githubCallbackMiddleWare, getGitHubCallbackController, getFailRegisterController, getFailLoginController, getFailGHController, isUserMiddleware, isAdminMiddleware, isPremiumMiddleware, isPremiumOrAdminMiddleware, canAddProductToCart }

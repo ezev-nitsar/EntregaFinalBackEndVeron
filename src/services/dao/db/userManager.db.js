@@ -50,6 +50,8 @@ export class UserManager {
         }
         if (userData.role == 'Admin') {
             user.role = 'Admin';
+        } else if (userData.role == 'Premium') {
+            user.role = 'Premium';
         } else {
             user.role = 'Usuario';
         }

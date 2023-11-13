@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getProductsPipelineController, getProductByIdController, postAddProductController, putUpdateProductController, deleteProductController } from '../controllers/products.controller.js';
+import { getProductsPipelineController, getProductByIdController, postAddProductController, putUpdateProductController, deleteProductController, deleteMiddleWare } from '../controllers/products.controller.js';
 const router = Router();
 
 /*ROUTER QUE MANEJA LOS PRODUCTOS
@@ -16,7 +16,7 @@ router.post('/', postAddProductController);
 router.put('/:pid', putUpdateProductController);
 
 //DELETE
-router.delete('/:pid', deleteProductController);
+router.delete('/:pid', deleteMiddleWare, deleteProductController);
 
 
 export default router;

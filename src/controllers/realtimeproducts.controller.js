@@ -1,5 +1,5 @@
 const getRealTimeProductsController = async (req, res) => {
-        res.render('realTimeProducts');
+        res.render('realTimeProducts', { user: req.session.user});
 }
 
 export { getRealTimeProductsController }

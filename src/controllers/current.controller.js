@@ -10,6 +10,8 @@ const getUpdateUserController = async (req, res) => {
     const userData = await userManager.getUserById(uid);
     if (userData.role === 'Admin') {
         userData.isAdmin = true;
+    } else if (userData.role === 'Premium') {
+        userData.isPremium = true;
     } else {
         userData.isUser = true;
     }

@@ -130,6 +130,7 @@ export class ProductManager {
             const code = producto.code;
             const stock = producto.stock;
             const category = producto.category;
+            const owner = producto.owner;
             const product = {
                 title,
                 description,
@@ -138,11 +139,12 @@ export class ProductManager {
                 code,
                 stock,
                 status,
-                category
+                category,
+                owner
             }
 
             try {
-                await productModel.create({ title: product.title, description: product.description, price: product.price, thumbnails: product.thumbnails, code: product.code, stock: product.stock, status: product.status, category: product.category });
+                await productModel.create({ title: product.title, description: product.description, price: product.price, thumbnails: product.thumbnails, code: product.code, stock: product.stock, status: product.status, category: product.category, owner: product.owner });
                 this.products.push(product);
                 return '{"status":"ok"}';
             } catch {

@@ -7,6 +7,7 @@ import cartsRoutes from './routes/carts.routes.js';
 import productRoutes from './routes/product.routes.js';
 import realTimeProducts from './routes/realtimeproducts.routes.js';
 import userRoutes from './routes/users.views.routes.js';
+import userApiRoutes from './routes/users.routes.js';
 import sessionRoutes from './routes/sessions.routes.js';
 import logoutRoutes from './routes/logout.routes.js';
 import ticketRoutes from './routes/ticket.routes.js';
@@ -50,9 +51,14 @@ app.use(session({
 initializePassport();
 app.use(passport.initialize());
 app.use(passport.session());
+
+//API's
 app.use("/api/products", productsRoutes);
 app.use("/api/carts", cartRoutes);
 app.use("/api/sessions", sessionRoutes);
+app.use("/api/users", userApiRoutes);
+
+//VIEWS
 app.use("/home", homeRoutes);
 app.use("/realtimeproducts", realTimeProducts);
 app.use("/messages", chatRoutes)
@@ -66,6 +72,7 @@ app.use("/mockingproducts", mockingProductsRoutes);
 app.use("/loggerTest", loggerTest);
 app.use("/mail", mailRoutes);
 app.use("/recovery", recoveryRoutes);
+
 const httpServer = app.listen(config.port, () => {
     log.info(`${new Date().toLocaleString()} escuchando en el puerto ${config.port}`)
 });

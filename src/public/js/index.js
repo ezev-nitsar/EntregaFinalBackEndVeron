@@ -8,7 +8,7 @@ btnCrearProducto.addEventListener('click', async () => {
     const precio = document.getElementById('precio').value;
     const stock = document.getElementById('stock').value;
     const categoria = document.getElementById('categoria').value;
-
+    const owner = document.getElementById('owner').value;
     const headers = new Headers({
        "Content-Type": "application/x-www-form-urlencoded"
     });
@@ -19,7 +19,8 @@ btnCrearProducto.addEventListener('click', async () => {
         "description": descripcion,
         "price": precio,
         "stock": stock,
-        "category": categoria
+        "category": categoria,
+        "owner": owner
     });
     try {
         const rta = await fetch('api/products', {

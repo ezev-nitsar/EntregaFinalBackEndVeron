@@ -61,4 +61,21 @@ const deleteProductController = async (req, res) => {
         }
 }
 
-export { getProductsPipelineController, getProductByIdController, postAddProductController, putUpdateProductController, deleteProductController }
+const deleteMiddleWare = async (req, res, next) => {
+    if (req.session.user.role === 'Admin') {
+        next();
+    } else if (req.session.user.role === 'Premium') {
+        const pid = req.params.pid;
+        const producto = await productManager.getProductById(pid);
+        if (producto.owner === req.session.user.id) {
+            next();
+        } else {
+            res.status(401).send({ status: 'failed', message: "Cannot delete. You're not owner of this product... =/" });
+        }
+    } else {
+        res.status(401).send({ status: 'failed', message: 'Cannot delete. No permission allowed... =/' });
+    }
+}
+
+
+export { getProductsPipelineController, getProductByIdController, postAddProductController, putUpdateProductController, deleteProductController, deleteMiddleWare }
