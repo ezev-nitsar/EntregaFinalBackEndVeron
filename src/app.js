@@ -27,9 +27,13 @@ import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import config from './config/enviroment.config.js';
 import { useLogger } from './config/logger.config.js';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
+import { swaggerOptions } from './config/swagger.config.js';
 
 const log = useLogger();
 const app = express();
+const specs = swaggerJSDoc(swaggerOptions);
 
 log.info(`${new Date().toLocaleString()} APP Iniciada en modo: ${config.enviroment}`);
 
@@ -73,6 +77,9 @@ app.use("/loggerTest", loggerTest);
 app.use("/mail", mailRoutes);
 app.use("/recovery", recoveryRoutes);
 
+
+//DOCS
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 const httpServer = app.listen(config.port, () => {
     log.info(`${new Date().toLocaleString()} escuchando en el puerto ${config.port}`)
 });

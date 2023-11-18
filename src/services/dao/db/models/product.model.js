@@ -17,7 +17,6 @@ const productsSchema = new mongoose.Schema({
     price: numberRequired,
     code: stringRequired,
     thumbnails: String,
-    code: stringRequired,
     stock: { type: Number },
     status: { type: Boolean },
     category: stringRequired,

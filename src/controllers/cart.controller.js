@@ -2,8 +2,8 @@ import { cartManager, productManager }  from '../services/factory.js';
 
 const getCartByIdController = async (req, res) => {
     res.set('Content-Type', 'application/json');
-    const carritos = await cartManager.getCartById(req.params.cid);
-    res.send(carritos)
+        const carritos = await cartManager.getCartById(req.params.cid);
+        res.send(carritos)
 }
 
 

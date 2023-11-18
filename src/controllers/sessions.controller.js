@@ -105,6 +105,10 @@ const isPremiumOrAdminMiddleware = (req, res, next) => {
 }
 
 const canAddProductToCart = async (req, res, next) => {
+    if (!req.session.user) {
+        req.logger.warning(`${new Date().toLocaleString()}: No se puede agregar un producto al carrito sin estar logueado`);
+        return "{status: 'failed', message: 'No se pudo agregar el producto al carrito. No se encuentra logueado'}";
+    } else {
     if (req.session.user.role === 'Usuario') {
         next();
     } else if (req.session.user.role === 'Premium') {
@@ -120,5 +124,6 @@ const canAddProductToCart = async (req, res, next) => {
         req.logger.warning(`${new Date().toLocaleString()}: Se debe tener perfil de Usuario para ejecutar esta tarea. Usted es ${req.session.user.role}`);
         return "{status: 'failed', message: 'No se pudo agregar el producto al carrito. Usted es Administrador'}";
     }
+}
 }
 export { registerMiddleWareLocal, loginMiddleWareLocal, postRegisterController, postLoginController, githubAuthenticateMiddleWare, getDummyFunction, githubCallbackMiddleWare, getGitHubCallbackController, getFailRegisterController, getFailLoginController, getFailGHController, isUserMiddleware, isAdminMiddleware, isPremiumMiddleware, isPremiumOrAdminMiddleware, canAddProductToCart }
