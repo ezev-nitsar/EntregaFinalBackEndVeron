@@ -120,3 +120,4 @@
 [31merror[39m: 17/11/2023, 22:22:07: Error al obtener el carrito: CastError: Cast to ObjectId failed for value "3" (type string) at path "_id" for model "carts"
 [31merror[39m: 17/11/2023, 23:10:13: Error al leer el producto: CastError: Cast to ObjectId failed for value "dasfasd" (type string) at path "_id" for model "products"
 [31merror[39m: 17/11/2023, 23:16:52: Error al leer el producto: CastError: Cast to ObjectId failed for value "dasf" (type string) at path "_id" for model "products"
+[31merror[39m: 29/11/2023, 14:35:23: Error al leer el producto: CastError: Cast to ObjectId failed for value "undefined" (type string) at path "_id" for model "products"

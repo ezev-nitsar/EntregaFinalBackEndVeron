@@ -26,13 +26,13 @@ const postAddProductController = async (req, res) => {
     try {
         const nuevoProducto = JSON.parse(await productManager.addProduct(req.body));
         if (nuevoProducto.status === "ok") {
-            res.send(`{"status": "ok"}`);
+            res.status(200).send(`{"status": "ok", "_id": "${nuevoProducto._id}"}`);
         } else {
-            res.send(`{"status": "failed", "message": "${nuevoProducto.message}" }`);
+            res.status(403).send(`{"status": "failed", "message": "${nuevoProducto.message}" }`);
         }
     } catch (error) {
         console.error(error);
-        res.send(`{"status": "failed", "message": "${error.message}" }`);
+        res.status(403).send(`{"status": "failed", "message": "${error.message}" }`);
     }
 }
 
@@ -42,7 +42,7 @@ const putUpdateProductController = async (req, res) => {
     const actualizarProducto = JSON.parse(await productManager.updateProduct(productId, req.body));
     if (actualizarProducto.status === "ok") {
         res.status(201);
-        res.send(`{"status": "ok"}`);
+        res.send(`{"status": "ok", "payload": "${actualizarProducto.payload}"}`);
     } else {
         res.status(400);
         res.send(`{"status": "failed", "message": "${actualizarProducto.message}" }`);

@@ -144,9 +144,9 @@ export class ProductManager {
             }
 
             try {
-                await productModel.create({ title: product.title, description: product.description, price: product.price, thumbnails: product.thumbnails, code: product.code, stock: product.stock, status: product.status, category: product.category, owner: product.owner });
+                const insert = await productModel.create({ title: product.title, description: product.description, price: product.price, thumbnails: product.thumbnails, code: product.code, stock: product.stock, status: product.status, category: product.category, owner: product.owner });
                 this.products.push(product);
-                return '{"status":"ok"}';
+                return '{"status":"ok", "_id":"' + insert._id + '"}';
             } catch {
                 const log = useLogger();
                 log.error(`${new Date().toLocaleString()}: Error al agregar el producto: ${error}`);
@@ -215,11 +215,11 @@ export class ProductManager {
             this.products[actualizar] = product;
 
             try {
-                await productModel.updateOne({ _id: id }, { title: product.title, description: product.description, price: product.price, thumbnails: product.thumbnails, code: product.code, stock: product.stock, status: product.status })
+                await productModel.updateOne({ _id: id }, { title: product.title, description: product.description, price: product.price, thumbnails: product.thumbnails, code: product.code, stock: product.stock, status: product.status, category: product.category })
             } catch (error) {
                 log.error(`${new Date().toLocaleString()}: Error al actualizar el producto: ${error}`);
             }
-            return '{"status":"ok"}';
+            return '{"status":"ok", "payload": "' + product + '"}';
         }
     }
 

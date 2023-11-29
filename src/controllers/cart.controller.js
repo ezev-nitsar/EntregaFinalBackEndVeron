@@ -31,7 +31,7 @@ const postAddProductToCartController = async (req, res) => {
             res.send('{"status":"failed", "message":"Product not found"}');
         } else {
             const result = await cartManager.addProduct(cartId, productId, 1);
-            res.send(result);
+            res.status(200).send(result);
         }
     } else {
         res.status(401);
