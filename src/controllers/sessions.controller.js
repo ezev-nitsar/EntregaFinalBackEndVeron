@@ -1,5 +1,6 @@
 import passport from "passport";
 import { productManager } from "../services/factory.js";
+import { userManager } from "../services/factory.js"
 const registerMiddleWareLocal = passport.authenticate('register', { failureRedirect: '/api/sessions/fail-register' });
 
 const loginMiddleWareLocal = passport.authenticate('login', { failureRedirect: '/api/sessions/fail-login'});
@@ -22,6 +23,7 @@ const postLoginController = async (req, res) => {
                 role: user.role,
                 cartId: user.cartId
             }
+            await userManager.setConnectionTime(req.session.user.id);
             req.logger.debug(`${new Date().toLocaleString()}: ${req.session.user.name} logged in successfully`);
             res.status(200).send({ status: 'ok', message: 'User logged in successfully', user });
         }
@@ -43,12 +45,14 @@ const getGitHubCallbackController = async (req, res) => {
             res.status(401).send({ status: 'error', message: 'Cannot login. Something really bad happened... =/' });
         } else {
             req.session.user = {
+                id: user._id,
                 name: `${user.first_name} ${user.last_name}`,
                 email: user.email,
                 age: user.age,
                 role: user.role,
                 cartId: user.cartId
             }
+            await userManager.setConnectionTime(req.session.user.id);
             req.logger.debug(`${new Date().toLocaleString()}: ${req.session.user.name} logged in successfully through GitHub`);
             res.redirect('/products');
         }
@@ -126,4 +130,28 @@ const canAddProductToCart = async (req, res, next) => {
     }
 }
 }
-export { registerMiddleWareLocal, loginMiddleWareLocal, postRegisterController, postLoginController, githubAuthenticateMiddleWare, getDummyFunction, githubCallbackMiddleWare, getGitHubCallbackController, getFailRegisterController, getFailLoginController, getFailGHController, isUserMiddleware, isAdminMiddleware, isPremiumMiddleware, isPremiumOrAdminMiddleware, canAddProductToCart }
+
+const isProfileComplete = async (req, res, next) => {
+    let profileFull = false;
+    const user = await userManager.getUserById(req.session.user.id);
+    let uploadedDocuments = Array();
+    if (!user.documents) {
+        profileFull = false;
+    } else {
+        for (const document in user.documents) {
+            uploadedDocuments.push(user.documents[document].name);
+        }
+        if (uploadedDocuments.includes("accountDocument") && uploadedDocuments.includes("addressDocument") && uploadedDocuments.includes("identificationDocument")) {
+            profileFull = true;
+        }
+    }
+    if (!profileFull) {
+        req.logger.warning(`${new Date().toLocaleString()}: No se puede acceder a esta página sin completar el perfil`);
+        res.render('denied', { rol: 'no tener el perfil completo. Se requiere subir los documentos de identidad, domicilio y estado de cuenta'})
+    } else {
+        next();
+    }
+
+}
+
+export { registerMiddleWareLocal, loginMiddleWareLocal, postRegisterController, postLoginController, githubAuthenticateMiddleWare, getDummyFunction, githubCallbackMiddleWare, getGitHubCallbackController, getFailRegisterController, getFailLoginController, getFailGHController, isUserMiddleware, isAdminMiddleware, isPremiumMiddleware, isPremiumOrAdminMiddleware, canAddProductToCart, isProfileComplete }

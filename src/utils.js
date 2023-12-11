@@ -2,6 +2,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import { fakerES as faker } from '@faker-js/faker';
+import multer from 'multer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -37,5 +38,27 @@ export const generateProduct = () => {
         ],
     }
 }
+
+export const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        let folder = "";
+        if (file.fieldname === "profilePicture") {
+            folder = "profiles/";
+        } else if (file.fieldname === "identificationDocument" || file.fieldname === "addressDocument" || file.fieldname === "accountDocument") {
+            folder = "documents/";
+        } else if (file.fieldname === "productPicture") {
+            folder = "products/";
+        }
+        cb(null, __dirname + "/public/uploads/" + folder)
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + "-" + file.originalname)
+    }
+});
+
+
+
+export const uploader = multer({ storage });
+
 
 export default __dirname;

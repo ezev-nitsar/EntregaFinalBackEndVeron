@@ -62,4 +62,14 @@ export class UserManager {
     deleteUser = async (id) => {
         await userModel.deleteOne({ _id: id });
     }
+    setConnectionTime = async (userId) => {
+        await userModel.updateOne({ _id: userId }, { last_connection: new Date() });
+    }
+    updateUserDocuments = async (userId, docName, docFile) => {
+        const newDoc = {
+            name: docName,
+            reference: docFile
+        }
+        await userModel.updateOne({ _id: userId }, { $push: { documents: newDoc } });
+    }
 }

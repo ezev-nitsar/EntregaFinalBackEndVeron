@@ -25,4 +25,9 @@ const usersControllers = async (req, res) => {
         log.error(`${new Date().toLocaleString()}: ${error.message}`);
     }
 }
-export { usersControllers }
+
+const getUserDocuments = async (req, res) => {
+    res.render('uploader', { uid: req.params.uid });
+}
+
+export { usersControllers, getUserDocuments }
