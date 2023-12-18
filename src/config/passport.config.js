@@ -12,9 +12,9 @@ const initializePassport = () => {
     //githubStrategy
     passport.use('github', new GitHubStrategy(
         {
-            clientID: 'Iv1.7dedd1b3bb18e534',
-            clientSecret: 'b099817e15bb81cad360abace53cdc05994cb9fc',
-            callbackUrl: 'http://localhost:8080/api/sessions/github-callback'
+            clientID: 'Iv1.30302269364d1a41',
+            clientSecret: '772a251b77a052fb31774c50df95399346d8508e',
+            callbackUrl: 'https://entregafinalbackendveron-production.up.railway.app/api/sessions/github-callback'
         },
         async (accessToken, refreshToken, profile, done) => {
 
