@@ -61,7 +61,7 @@ const deleteProductController = async (req, res) => {
             if (userData !== false) {
                 const emailBody = {
                     to: userData.email,
-                    subject: "Producto eliminada",                
+                    subject: "Producto eliminado",                
                     html: "<h1>Hola " + userData.first_name + "</h1><br/><h2>Se ha eliminado un Producto que eras el Owner: " + productData.title + "</h2>"
                 }
                 try {
