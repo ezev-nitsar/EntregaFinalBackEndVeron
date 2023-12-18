@@ -33,7 +33,7 @@ const initializePassport = () => {
                         email: profile._json.email,
                         password: '',
                         registerMethod: "GitHub",
-                        role: "user",
+                        role: "Usuario",
                         cartId: cartParsed.createdCartId
                     }
                     
