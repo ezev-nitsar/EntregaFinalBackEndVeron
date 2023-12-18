@@ -1,5 +1,5 @@
-import { productManager } from "../services/factory.js";
-
+import { productManager, userManager } from "../services/factory.js";
+import envConfig from "../config/enviroment.config.js";
 const getProductsPipelineController = async (req, res) => {
     const { limit, page, query, sort } = req.query;
     res.set('Content-Type', 'application/json');
@@ -53,8 +53,31 @@ const putUpdateProductController = async (req, res) => {
 const deleteProductController = async (req, res) => {
     const productId = req.params.pid;
     res.set('Content-Type', 'application/json');
+    const productData = await productManager.getProductById(productId);
     const eliminarProducto = JSON.parse(await productManager.deleteProduct(productId));
     if (eliminarProducto.status === "ok") {
+        if (productData.owner !== null) {
+            const userData = await userManager.getUserById(productData.owner);
+            if (userData !== false) {
+                const emailBody = {
+                    to: userData.email,
+                    subject: "Producto eliminada",                
+                    html: "<h1>Hola " + userData.first_name + "</h1><br/><h2>Se ha eliminado un Producto que eras el Owner: " + productData.title + "</h2>"
+                }
+                try {
+                    fetch("http://localhost:" + envConfig.port + "/mail/send", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(emailBody)
+                    });
+                } catch (error) {
+                    const log = useLogger();
+                    log.error(`${new Date().toLocaleString()}: Error al enviar el correo: ${error}`);
+                }
+            }
+        }
         res.status(200).send(`{"status": "ok"}`);
     } else {
         res.status(400).send(`{"status": "failed", "message": "${eliminarProducto.message}" }`);
@@ -62,7 +85,7 @@ const deleteProductController = async (req, res) => {
 }
 
 const deleteMiddleWare = async (req, res, next) => {
-    if (!req.session.users) {
+    if (!req.session.user) {
         res.status(401).send({ status: 'failed', message: 'Cannot delete. You are not logged in' });
     } else {
         if (req.session.user.role === 'Admin') {

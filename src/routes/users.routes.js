@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { usersControllers } from '../controllers/users.controllers.js'
-import { isProfileComplete } from '../controllers/sessions.controller.js';
+import { usersControllers, userViewController, deleteTimedOutUsers, deleteUserController } from '../controllers/users.controllers.js'
+import { isProfileComplete, isAdminMiddleware } from '../controllers/sessions.controller.js';
 import { uploader } from '../utils.js';
 import { userManager } from "../services/factory.js"
 const router = Router();
 
 //GET
-router.get("/premium/:uid", isProfileComplete, usersControllers);
+router.get("/premium/:uid", isProfileComplete, isAdminMiddleware, usersControllers);
+router.get("/viewusers", userViewController);
 
 
 //POST
@@ -36,5 +37,9 @@ router.post("/:uid/documents", uploader.fields(
     }
     res.send("Documentos subidos correctamente");
 });
+
+//DELETE
+router.delete("/removeoldusers", isAdminMiddleware, deleteTimedOutUsers);
+router.delete("/removeuser/:uid", isAdminMiddleware, deleteUserController);
 
 export default router;

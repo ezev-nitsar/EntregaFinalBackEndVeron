@@ -133,7 +133,7 @@ const canAddProductToCart = async (req, res, next) => {
 
 const isProfileComplete = async (req, res, next) => {
     let profileFull = false;
-    const user = await userManager.getUserById(req.session.user.id);
+    const user = await userManager.getUserById(req.params.uid);
     let uploadedDocuments = Array();
     if (!user.documents) {
         profileFull = false;
@@ -147,7 +147,7 @@ const isProfileComplete = async (req, res, next) => {
     }
     if (!profileFull) {
         req.logger.warning(`${new Date().toLocaleString()}: No se puede acceder a esta página sin completar el perfil`);
-        res.render('denied', { rol: 'no tener el perfil completo. Se requiere subir los documentos de identidad, domicilio y estado de cuenta'})
+        res.status(400).send({ status: 'failed', message: 'No se puede realizar esta acción sin completar el perfil' });
     } else {
         next();
     }

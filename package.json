@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "mocha test/supertest.test.js",
-    "start": "nodemon src/app.js --mode prod --ignore /src/data/*.json",
+    "start": "node src/app.js",
+    "startMon": "nodemon src/app.js --mode prod --ignore /src/data/*.json",
     "dev": "nodemon src/app.js --mode dev --ignore /src/data/*.json",
     "start-fs": "nodemon src/app.js --mode prod --persist file --ignore /src/data/*.json"
   },
