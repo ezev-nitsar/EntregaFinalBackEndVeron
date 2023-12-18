@@ -75,8 +75,8 @@ export class ProductManager {
             page: page,
             hasPrevPage: productos.hasPrevPage,
             hasNextPage: productos.hasNextPage,
-            prevLink: productos.prevPage ? `http://localhost:8080/products?page=${productos.prevPage}&sort=${sort}&query=${query}` : null,
-            nextLink: productos.nextPage ? `http://localhost:8080/products?page=${productos.nextPage}&sort=${sort}&query=${query}` : null,
+            prevLink: productos.prevPage ? `/products?page=${productos.prevPage}&sort=${sort}&query=${query}` : null,
+            nextLink: productos.nextPage ? `/products?page=${productos.nextPage}&sort=${sort}&query=${query}` : null,
             validPage: paginaValida //Este se agregó en forma adicional para saber si renderizo o no en Handlebars
         };
     }
