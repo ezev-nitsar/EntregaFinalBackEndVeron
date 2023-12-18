@@ -21,6 +21,7 @@ form.addEventListener('submit', e => {
             console.log(result);
             if (result.status === 200) {
                 alert('Documentos subidos correctamente');
+                location.href = "/";
             } else {
                 alert("Hubo un error al subir los documentos");
             }
