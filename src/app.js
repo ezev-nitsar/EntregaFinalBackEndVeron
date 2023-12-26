@@ -82,7 +82,7 @@ app.use("/recovery", recoveryRoutes);
 app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 const httpServer = app.listen(config.port, () => {
     log.info(`${new Date().toLocaleString()} escuchando en el puerto ${config.port}`)
-    log.info(`${new Date().toLocaleString()} URL: ${config.baseUrl}:${config.port}`)
+    log.info(`${new Date().toLocaleString()} URL: ${config.baseUrl}`)
 });
 
 const socketServer = new Server(httpServer);
