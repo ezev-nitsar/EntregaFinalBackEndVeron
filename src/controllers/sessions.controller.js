@@ -60,11 +60,11 @@ const getGitHubCallbackController = async (req, res) => {
 }
 
 const getFailRegisterController = (req, res) => {
-    res.render('error', { error: 'No se pudo registrar el usuario en forma Local'});
+    res.render('error', { error: 'No se pudo registrar el usuario en forma Local. Verifica los datos y vuelve a intentarlo.'});
 }
 
 const getFailLoginController = (req, res) => {
-    res.render('error', { error: 'No se pudo iniciar sesión en forma Local'});
+    res.render('error', { error: 'No se pudo iniciar sesión en forma Local. Verifica los datos y vuelve a intentarlo.'});
 }
 
 const getFailGHController = (req, res) => {
