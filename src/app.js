@@ -86,6 +86,7 @@ const httpServer = app.listen(config.port, () => {
 
 const socketServer = new Server(httpServer);
 
+console.log(config.baseUrl);
 
 socketServer.on('connection', async socket => {
     const productos = await productManager.getProducts();
