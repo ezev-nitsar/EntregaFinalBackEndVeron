@@ -38,7 +38,8 @@ const ticketsSchema = new mongoose.Schema({
             }
         ],
         default: []
-    }
+    },
+    mail_enviado: Boolean
 }, {
     timestamps: true
 });

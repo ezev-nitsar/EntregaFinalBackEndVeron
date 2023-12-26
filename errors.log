@@ -127,3 +127,6 @@
 535 5.7.8  https://support.google.com/mail/?p=BadCredentials p4-20020a634204000000b005b856fab5e9sm17470686pga.18 - gsmtp
 [31merror[39m: 18/12/2023, 11:21:50: Error al enviar el correo: Error: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
 535 5.7.8  https://support.google.com/mail/?p=BadCredentials w190-20020a6362c7000000b005cd8866cccesm3111779pgb.27 - gsmtp
+[31merror[39m: 26/12/2023, 10:29:50: Error al crear el link de recuperación
+[31merror[39m: 26/12/2023, 11:40:10: Error al crear el link de recuperación
+[31merror[39m: 26/12/2023, 11:40:26: Error al crear el link de recuperación

@@ -1,7 +1,7 @@
 import passport from "passport";
 import { productManager } from "../services/factory.js";
 import { userManager } from "../services/factory.js"
-const registerMiddleWareLocal = passport.authenticate('register', { failureRedirect: '/api/sessions/fail-register' });
+const registerMiddleWareLocal = passport.authenticate('register', { failureRedirect: '/api/sessions/fail-register', successRedirect: '/users/login' });
 
 const loginMiddleWareLocal = passport.authenticate('login', { failureRedirect: '/api/sessions/fail-login'});
 

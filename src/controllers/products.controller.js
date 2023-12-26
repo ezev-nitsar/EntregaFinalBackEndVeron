@@ -58,7 +58,7 @@ const deleteProductController = async (req, res) => {
     if (eliminarProducto.status === "ok") {
         if (productData.owner !== null) {
             const userData = await userManager.getUserById(productData.owner);
-            if (userData !== false) {
+            if (userData !== null && userData.email) {
                 const emailBody = {
                     to: userData.email,
                     subject: "Producto eliminado",                

@@ -1,8 +1,14 @@
 import { PasswordRecoveryManager } from "../services/dao/db/passRecoveryManager.db.js"
 import config from "../config/enviroment.config.js";
 import { useLogger } from "../config/logger.config.js";
+import validator from 'email-validator';
 const getRecoveryLink = async (req, res) => {
     const userEmail = req.params.userEmail;
+    const isValidEmail = validator.validate(userEmail);
+    if (!isValidEmail) {
+        res.status(403).send('{"status":"failed", "message": "Invalid email"}')
+    } else {
+
     try {
         const passRecoveryManager = new PasswordRecoveryManager();
         const response = await passRecoveryManager.createRecoveryId(userEmail);
@@ -11,7 +17,7 @@ const getRecoveryLink = async (req, res) => {
             const bodyData = {
                 "to": responseJson.userEmail,
                 "subject": "Recuperación de contraseña",
-                "html": "<html><h1>Recupero de Contraseña</h1><br/><p>Haz clic en el siguiente enlace para recuperar tu contraseña: " + "http://localhost:" + config.port + "/recovery/reset-password/" + responseJson.createdRecoveryId + "</p></html>"
+                "html": "<html><h1>Recupero de Contraseña</h1><br/><p>Haz clic en el siguiente enlace para recuperar tu contraseña: " + config.baseUrl + ":" + config.port + "/recovery/reset-password/" + responseJson.createdRecoveryId + "</p></html>"
             }
             const status = await fetch('http://localhost:' + config.port + '/mail/send', {
                 method: "POST",
@@ -31,6 +37,7 @@ const getRecoveryLink = async (req, res) => {
         log.error(`${new Date().toLocaleString()}: Error al crear el link de recuperación: ${error}`);
         res.status(400).send('{"status":"failed", "message": "Error when creating recovery link"}');
     }
+}
 }
 const resetPassword = async (req, res) => {
     const requestId = req.params.requestId;

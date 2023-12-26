@@ -12,9 +12,10 @@ form.addEventListener('submit', e => {
                 }
         ).then (result => {
             if (result.status === 200) {
-                console.log(result);
                 alert("Se ha enviado un link de recupero de Contraseña\nRecuerda que tienes una hora para cambiarla");
                 window.location.replace('/products');
+            } else if (result.status === 403) {
+                alert("El correo electrónico especificado no es válido");
             } else {
                 alert("No encontramos un usuario con el correo electrónico especificado");
             }

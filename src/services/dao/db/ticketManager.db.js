@@ -73,4 +73,16 @@ export class TicketManager {
             log.error(`${new Date().toLocaleString()}: Error al cargar el ticket: ${error}`);
         }
     }
+
+    markAsMailSent = async (ticketId) => {
+        try {
+            const ticket = await ticketModel.findOne( {_id: ticketId });
+            ticket.mail_enviado = true;
+            await ticket.save();
+        }
+        catch (error) {
+            const log = useLogger();
+            log.error(`${new Date().toLocaleString()}: Error al marcar el ticket como enviado: ${error}`);
+        }
+    }
 }

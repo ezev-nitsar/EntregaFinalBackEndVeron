@@ -4,7 +4,7 @@ import GitHubStrategy from 'passport-github2';
 import { createHash, isValidPassword } from '../utils.js';
 import { cartManager, userManager } from '../services/factory.js';
 import { UserDTO } from '../services/dao/dto/user.dto.js';
-
+import validator from 'email-validator';
 //Declaramos nuestra estrategia:
 const localStrategy = passportLocal.Strategy;
 const initializePassport = () => {
@@ -19,7 +19,6 @@ const initializePassport = () => {
         async (accessToken, refreshToken, profile, done) => {
 
             try {
-                //const user = await userModel.findOne({ email: profile._json.email })
                 const user = await userManager.getUserByEmail(profile._json.email);
                 if (!user) {
                     //como el usuario no existe, lo genero
@@ -56,9 +55,9 @@ const initializePassport = () => {
         { passReqToCallback: true, usernameField: 'email' }, async (req, username, password, done) => {
             const { first_name, last_name, email, age } = req.body;
             try {
+                const isValidEmail = validator.validate(email);
                 const exists = await userManager.getUserByEmail(email);
-                if (exists) {
-                    
+                if (exists || !isValidEmail) {
                     return done(null, false);
                 }
                 const cartId = await cartManager.createCart();

@@ -47,6 +47,30 @@ btnCrearProducto.addEventListener('click', async () => {
     }
 });
 
+const rmvProducto = async (idProducto) => {
+    if (confirm('¿Está seguro que deseas eliminar el producto?')) {
+        const headers = new Headers({
+            "Content-Type": "application/x-www-form-urlencoded"
+         });
+        
+         try {
+            const rta = await fetch('api/products/' + idProducto, {
+                method: 'DELETE',
+                headers: headers,
+            });
+            const resultado = await rta.json();
+            if (resultado.status !== 'failed') {
+                socket.emit('updateRequest');
+                alert('Producto eliminado exitosamente!');
+            } else {
+                alert('ERROR: Verifica los campos y vuelve a intentar.<br>Respuesta: ' + resultado.message);
+            }
+        } catch (error) {
+            console.log('Error: ' + error);
+        }
+    }
+}
+
 btnQuitarProducto.addEventListener('click', async () => {
     const idProductoRemover = document.getElementById('idProductoRemover').value;
     console.log(idProductoRemover);
@@ -90,11 +114,12 @@ socket.on('products', products => {
                 <th>Precio</th>
                 <th>Stock</th>
                 <th>Categoría</th>
+                <th>Quitar</th>
             </tr>
         </thead>
         <tbody>`
     if (products.length === 0) {
-        tablaSalida += "<tr><td colspan='6'><i>(No hay productos)</i></td></tr>";
+        tablaSalida += "<tr><td colspan='7'><i>(No hay productos)</i></td></tr>";
     } else {
         products.forEach(producto => {
             tablaSalida += `<tr>
@@ -105,6 +130,7 @@ socket.on('products', products => {
                                 <td>${producto.price}</td>
                                 <td>${producto.stock}</td>
                                 <td>${producto.category}</td>
+                                <td><a onclick="rmvProducto('${producto._id}');" class='btn btn-danger'>Quitar</a></td>
                             </tr>`;
         })
     }
