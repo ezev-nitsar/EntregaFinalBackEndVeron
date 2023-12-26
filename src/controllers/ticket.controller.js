@@ -6,7 +6,7 @@ const ticketController = async (req, res) => {
     const ticketData = await ticketManager.loadTicket(tid);
     if (!ticketData.mail_enviado) {
         const asunto = "Muchas gracias por tu Compra!";
-        let cuerpo = "";
+        let cuerpo = "<html><body><h1>Gracias por tu compra!</h1>";
         if (ticketData.products.length > 0) {
          cuerpo += "<p>Estos son los productos que compraste:</p><ul>";
         ticketData.products.forEach(product => {
