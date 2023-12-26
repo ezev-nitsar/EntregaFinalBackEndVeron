@@ -6,14 +6,18 @@ const ticketController = async (req, res) => {
     const ticketData = await ticketManager.loadTicket(tid);
     if (!ticketData.mail_enviado) {
         const asunto = "Muchas gracias por tu Compra!";
+        if (ticketData.products) {
         let cuerpo = "<html><body><h1>Gracias por tu compra!</h1><p>Estos son los productos que compraste:</p><ul>";
         ticketData.products.forEach(product => {
             cuerpo += "<li>" + product.product.title + " - " + product.quantity + " unidades</li>";
         });
+    }
+        if (ticketData.notAvailableProducts) {
         cuerpo += "</ul><p>Estos son los productos que no pudimos enviarte:</p><ul>";
         ticketData.notAvailableProducts.forEach(product => {
             cuerpo += "<li>" + product.product.title + " - " + product.quantity + " unidades</li>";
         });
+    }
         cuerpo += "</ul><p>El total de tu compra es: $" + ticketData.amount + "</p></body></html>";
         try {
         fetch ('http://localhost:' + config.port + '/mail/send', {
