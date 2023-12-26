@@ -17,7 +17,7 @@ const getRecoveryLink = async (req, res) => {
             const bodyData = {
                 "to": responseJson.userEmail,
                 "subject": "Recuperación de contraseña",
-                "html": "<html><h1>Recupero de Contraseña</h1><br/><p>Haz clic en el siguiente enlace para recuperar tu contraseña: " + config.baseUrl + "recovery/reset-password/" + responseJson.createdRecoveryId + "</p></html>"
+                "html": "<html><h1>Recupero de Contraseña</h1><br/><p>Haz clic en el siguiente enlace para poder recuperar tu contraseña: " + config.baseUrl + "recovery/reset-password/" + responseJson.createdRecoveryId + "</p></html>"
             }
             const status = await fetch('http://localhost:' + config.port + '/mail/send', {
                 method: "POST",
